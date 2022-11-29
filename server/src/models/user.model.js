@@ -1,5 +1,3 @@
-const planetsMongo = require('../../../../../Nasa_19110324-master/server/src/models/planets.mongo')
-
 const userDatabase = require('./user.mongo')
 
 const DEFAULT_ID = 1
