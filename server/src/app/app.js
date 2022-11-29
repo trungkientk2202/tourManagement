@@ -9,8 +9,6 @@ const passport = require('passport');
 const {Strategy} = require('passport-google-oauth2')
 const AUTH_CONFIG = require('../config/security/auth')
 const {verifyCallback, checkLoggedIn} = require('../config/security/login');
-const { findUser } = require('../models/user.model');
-
 
 require('dotenv').config();
 
@@ -27,7 +25,7 @@ app.use(cors({
     origin: "http://localhost:3000"
 }));
 
-// config security
+
 app.use(helmet());
 app.use(cookieSession({
     name: 'session',
@@ -36,31 +34,10 @@ app.use(cookieSession({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.get('/auth/google', passport.authenticate('google', {
-    scope: ['email'],
-}), (req, res) => {
-    const email =  req.user.email
-    res.send(findUser({email: email}))
-})
-app.get('/auth/google/callback', passport.authenticate('google', {
-    failureRedirect: '/failure',
-    successRedirect: '/',
-    session: true,
-}), (req, res) => {
-    console.log('Google is called us back!')
-})
-app.get('/auth/logout', (req, res) => {
-    req.logOut()
-    return res.redirect('/')
-})
-
-// config app
 app.use(morgan('combined'));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..', 'public')));
-app.use('/secret', checkLoggedIn, (req, res) => {
-    res.send("Hahaahhahaah")
-})
+
 app.get('/*', (req, res) => {
     res.sendFile(path.join(__dirname, '..','..', 'public', 'index.html'));
 })
