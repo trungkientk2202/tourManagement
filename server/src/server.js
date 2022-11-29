@@ -5,6 +5,8 @@ http.createServer(app);
 
 const PORT = process.env.PORT || 8000;
 
+console.log('test');
+
 app.listen(PORT, () => {
     console.log('Listening at port ', PORT);
 })
