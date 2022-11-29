@@ -8,7 +8,7 @@ const config = {
 }
 
 const AUTH_CONFIG = {
-    callbackURL: '/auth/google/callback',
+    callbackURL: 'api/user/auth/google/callback',
     clientID: config.CLIENT_ID,
     clientSecret: config.CLIENT_SECRET
 }
