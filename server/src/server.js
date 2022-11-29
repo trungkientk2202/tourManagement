@@ -1,10 +1,13 @@
-const app = require('./app');
-const http = require('http');
-
-http.createServer(app);
+const https = require('http');
+const app = require('./app/app');
+const {mongoConnect} = require('./config/services/mongo')
 
 const PORT = process.env.PORT || 8000;
 
-app.listen(PORT, () => {
-    console.log('Listening at port ', PORT);
-})
+(function startServer() {
+    mongoConnect()
+    https.createServer({}, 
+        app).listen(PORT, () => {
+            console.log(`Listening on por ${PORT}`)
+        });
+})();
