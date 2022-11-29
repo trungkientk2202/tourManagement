@@ -1,11 +1,16 @@
-const https = require('http');
+const https = require('https');
+const fs = require('fs');
 const app = require('./app/app');
 
 const PORT = process.env.PORT || 8000;
 
 (function startServer() {
 
-    https.createServer({}, 
+    //"C:\openssl\bin\openssl.exe" req -x509 -config "C:\openssl\ssl\openssl.cnf"  -newkey rsa:4096 -nodes -keyout key.pem -out cert.pem -days 365
+    https.createServer({
+        key: fs.readFileSync('key.pem'),
+        cert: fs.readFileSync('cert.pem')
+    }, 
         app).listen(PORT, () => {
             console.log(`Listening on por ${PORT}`)
         });
