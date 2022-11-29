@@ -30,7 +30,7 @@ app.use(helmet());
 app.use(cookieSession({
     name: 'session',
     maxAge: 60 * 60 * 24 * 1000,
-    keys: [process.env.COOKIE_KEY_1, process.env.COOKIE_KEY_2]
+    keys: [process.env.SECRET_KEY1, process.env.SECRET_KEY2]
 }));
 app.use(passport.initialize());
 app.use(passport.session());

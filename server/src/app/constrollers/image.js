@@ -28,6 +28,10 @@ const uploadImageHandler = (req, res) => {
                 file: req.file.filename
             })
         }
+        else
+            return res.status(401).json({
+                message: 'No file selected'
+            })
 
     }catch(error){
         console.log(error.message);

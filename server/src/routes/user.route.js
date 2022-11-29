@@ -8,7 +8,7 @@ const { test } = require('../app/constrollers/user');
 router.get('/test', checkLoggedIn, test);
 router.get('/auth/google', passport.authenticate('google', {
     scope: ['email'],
-}));
+}),(req, res) => {});
 
 router.get('/auth/google/callback', passport.authenticate('google', {
     failureRedirect: '/failure',
