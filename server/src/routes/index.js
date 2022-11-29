@@ -1,7 +1,9 @@
 const userRoute = require('./user.route');
+const { checkLoggedIn } = require('../config/security/login');
+
 
 function route(app) {
-    app.use('/api/user', userRoute);
+    app.use('/',checkLoggedIn, userRoute);
 };
 
 module.exports = route;
