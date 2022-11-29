@@ -1,12 +1,12 @@
-const app = require('./app');
-const http = require('http');
-
-http.createServer(app);
+const https = require('http');
+const app = require('./app/app');
 
 const PORT = process.env.PORT || 8000;
 
-console.log('test');
+(function startServer() {
 
-app.listen(PORT, () => {
-    console.log('Listening at port ', PORT);
-})
+    https.createServer({}, 
+        app).listen(PORT, () => {
+            console.log(`Listening on por ${PORT}`)
+        });
+})();
