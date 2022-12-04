@@ -1,6 +1,6 @@
 const express = require('express');
 const { uploadImage, uploadImageHandler, getImage } = require('../app/constrollers/image');
-const { checkLoggedIn } = require('../config/security/login')
+const { checkLoggedIn } = require('../config/security/auth');
 const router = express.Router();
 
 router.post('/upload',checkLoggedIn, uploadImage.single('file'), uploadImageHandler);
