@@ -1,20 +1,20 @@
 import React, { useMemo } from 'react';
 import { CssBaseline, StyledEngineProvider } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Palette from './palette.theme';
-import CustomShadows from './shadows.theme';
-import Typography from './typography.theme';
+import palette from './palette.theme';
+import customShadows from './shadows.theme';
+import typography from './typography.theme';
 import useStyles, { styles } from './theme.styled';
 import GlobalStyles from '@mui/material/GlobalStyles';
+import componentsOverride from './overrides';
 
 const ThemeCustomization = ({ children }) => {
     const [classes] = useStyles();
 
-    const themeCustomPalette = Palette('light', 'default');
+    const themeCustomPalette = palette('light', 'default');
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const themeTypography = Typography(`Roboto`);
-    const themeCustomShadows = useMemo(() => CustomShadows(themeCustomPalette), [themeCustomPalette]);
+    const themeTypography = typography('Roboto');
+    const themeCustomShadows = useMemo(() => customShadows(themeCustomPalette), [themeCustomPalette]);
 
     const themeOptions = useMemo(() => {
         return {
@@ -47,6 +47,7 @@ const ThemeCustomization = ({ children }) => {
     }, [themeCustomPalette, themeTypography, themeCustomShadows]);
 
     const themes = createTheme(themeOptions);
+    themes.components = componentsOverride(themes);
 
     return (
         <StyledEngineProvider injectFirst>

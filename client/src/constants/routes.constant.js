@@ -1,9 +1,7 @@
 const URL_PATHS = {
-    HOME: '/',
-    LOGIN: 'login',
-    DASHBOARD: 'my',
-    COURSE: 'course',
-    COURSE_ID: ':courseId'
+  HOME: '/',
+  LOGIN: 'login',
+  DASHBOARD: 'dashboard',
 };
 
 export { URL_PATHS };
