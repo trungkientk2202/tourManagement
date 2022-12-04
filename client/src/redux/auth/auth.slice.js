@@ -24,10 +24,10 @@ const authSlice = createSlice({
     },
     extraReducers(builder) {
         builder
-            .addCase(getMeThunk.pending, (state, _) => {
+            .addCase(logInThunk.pending, (state, _) => {
                 state.loading = true;
             })
-            .addCase(getMeThunk.fulfilled, (state, action) => {
+            .addCase(logInThunk.fulfilled, (state, action) => {
                 state.currentUser = action.payload;
                 state.loading = false;
             })

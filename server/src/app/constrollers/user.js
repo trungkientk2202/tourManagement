@@ -16,10 +16,10 @@ const getCurrentUser = async (req, res) => {
             return makeSuccessResponse(res, 200, {
                 data: getUser,
             });
-        }    
+        }
         return makeSuccessResponse(res, 404, {
             error: "User not found!",
-        });  
+        });
     }
     else{
         return makeSuccessResponse(res, 404, {
@@ -76,7 +76,7 @@ const getUser = async (req, res) => {
 };
 
 module.exports = {
-    test, 
+    test,
     addNewUser,
     getCurrentUser,
     getUser,

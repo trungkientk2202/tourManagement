@@ -33,7 +33,7 @@ axiosInstance.interceptors.response.use(
         const originalConfig = error.config;
 
         if (
-            [HTTP_STATUS_CODES.UNAUTHORIZED.code, HTTP_STATUS_CODES.FORBIDDEN.code].includes(error.response.status) &&
+            [HTTP_STATUS_CODES.UNAUTHORIZED.code, HTTP_STATUS_CODES.FORBIDDEN.code].includes(error?.response?.status) &&
             !originalConfig._retry
         ) {
             originalConfig._retry = true;
@@ -57,9 +57,9 @@ axiosInstance.interceptors.response.use(
 );
 
 const handleError = (error) => {
-    const _accessToken = localService.getItem(LOCAL_STORAGE.accessToken);
+    const _currentUser = localService.getItem(LOCAL_STORAGE.currentUser);
 
-    if (_accessToken) {
+    if (_currentUser) {
         return Promise.reject({
             status: 500,
             data: {
@@ -72,7 +72,7 @@ const handleError = (error) => {
 };
 const handleResponse = (response) => {
     const status = get(response, 'status', 500).toString();
-    const _currentUser = localService.getItem(LOCAL_STORAGE.accessToken);
+    const _currentUser = localService.getItem(LOCAL_STORAGE.currentUser);
 
     return new Promise((resolve, reject) => {
         if (+status !== HTTP_STATUS_CODES.OK.code) {
