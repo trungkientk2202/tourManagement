@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from '@/common/utils/mui.util';
+import { styled } from '../utils/mui.util';
 
 const PREFIX = 'Theme';
 const classes = {
@@ -14,15 +14,6 @@ export const styles = {
             // Using CSS Overscroll-Behavior
             // To Prevent Scrolling Of Parent Containers From Within Overflow Containers
             overscrollBehavior: 'contain'
-        },
-        a: {
-            textDecoration: 'none',
-            color: theme.palette.grey[700],
-            transition: 'all .2s ease-in-out',
-            '&:hover': {
-                textDecoration: 'underline',
-                color: theme.palette.grey[900]
-            }
         },
         '.container': {
             maxWidth: theme.breakpoints.values.xl,
