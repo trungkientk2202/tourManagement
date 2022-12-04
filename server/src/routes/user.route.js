@@ -15,7 +15,7 @@ router.get('/auth/google/callback', passport.authenticate('google', {
     successRedirect: '/',
     session: true,
 }), (req, res) => {
-    console.log('Google is called us back!')
+    console.log('Google call us back!')
 });
 
 router.get('/auth/logout', (req, res) => {

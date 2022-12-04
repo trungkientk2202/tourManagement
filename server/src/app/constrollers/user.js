@@ -5,7 +5,7 @@ const {
 } = require('../../models/user.model')
 
 const test = (req, res) => {
-    console.log('hello')
+    console.log(req.user);
     res.send('hello world');
 }
 
