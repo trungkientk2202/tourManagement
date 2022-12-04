@@ -1,10 +1,11 @@
 const { addUser, findUser } = require('../../config/db/models/user.model')
 const { makeSuccessResponse } = require('../../utils/Response');
 const { CLIENT_URL } = require('../../utils/Constants');
+const global = require('../../global');
 
-const { saveUser } = require('../../config/security/auth');
 const test = (req, res) => {
     console.log(req.user);
+    console.log("global: ", global.user);
     res.send('hello world');
 };
 
@@ -59,7 +60,7 @@ const googleLoginFailed = (req, res) => {
 }
 
 const googleLoginSuccess = async(req, res) => {
-    const user = await findUser({googleId: req.user}) || saveUser
+    const user = await findUser({googleId: req.user}) || global.user
     if(req.user && user) {
         
         console.log(user);
