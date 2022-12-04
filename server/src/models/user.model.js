@@ -4,10 +4,24 @@ const DEFAULT_ID = 1
 
 async function addUser(user) {
     try {
-        await planetsMongo.insertOne(user)
+        await userDatabase.updateOne({email: user.email}, {
+            id: user.id, email: user.email
+        }, {
+            upsert: true
+        })
     } catch(err) {
         console.log(err)
     }
+}
+
+async function findUser(filter) {
+    try {
+        const user = await userDatabase.findOne(filter)
+        return user
+    } catch (err) {
+        console.log(err)
+        return {}
+    }   
 }
 
 async function getUserByUsernameAndPassword(email, password) {
@@ -33,4 +47,5 @@ module.exports = {
     addUser,
     getUserByUsernameAndPassword,
     getLatestId,
+    findUser,
 }

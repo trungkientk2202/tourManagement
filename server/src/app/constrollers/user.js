@@ -5,12 +5,13 @@ const {
 } = require('../../models/user.model')
 
 const test = (req, res) => {
+    console.log('hello')
     res.send('hello world');
 }
 
 async function httpAddNewUser(req, res) {
     const user = req.body
-    if (!user.email || !user.password) {
+    if (!user.email) {
         return res.status(404).json({
             error: "Missing user's property!"
         })
@@ -20,5 +21,6 @@ async function httpAddNewUser(req, res) {
 }
 
 module.exports = {
-    test
+    test, 
+    httpAddNewUser,
 }
