@@ -56,10 +56,12 @@ const googleLoginFailed = (req, res) => {
     });
 }
 
-const googleLoginSuccess = (req, res) => {
-    if(req.user) {
+const googleLoginSuccess = async(req, res) => {
+    const user = await findUser({googleId: req.user});
+    if(req.user && user) {
+
         return makeSuccessResponse(res, 200, {
-            user: req.user,
+            user: user
             // cookies: req.cookies
         })
     }

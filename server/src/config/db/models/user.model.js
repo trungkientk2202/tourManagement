@@ -33,7 +33,7 @@ const addUser = async(user) => {
 
 const findUser = async(filter) => {
     try {
-        const user = await users.findOne(filter, ('-_id -__v -role -password -status -type'));
+        const user = await users.findOne(filter, ('-_id -__v -role -password -status'));
         if(user instanceof users && user)
             return user;
         return false;
