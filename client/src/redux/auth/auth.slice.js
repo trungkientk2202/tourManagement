@@ -1,8 +1,8 @@
-import { LOCAL_STORAGE } from '@/constants/common.constant';
+import { LOCAL_STORAGE } from '../../constants/common.constant';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import * as authService from '@/services/auth.service';
-import { openToast } from '@features/toast/toast.slice';
-import * as localService from '@/services/local.service';
+import * as authService from '../../services/auth.service';
+// import { openToast } from '@features/toast/toast.slice';
+import * as localService from '../../services/local.service';
 
 const initialValues = {
     currentUser: null,
@@ -65,14 +65,14 @@ const getMeThunk = createAsyncThunk('auth/getMe', async (_, { dispatch, rejectWi
         return res.data;
     } catch (error) {
         localService.removeItem(LOCAL_STORAGE.accessToken);
-        dispatch(
-            openToast({
-                data: {
-                    type: 'error',
-                    message: 'error'
-                }
-            })
-        );
+        // dispatch(
+        //     openToast({
+        //         data: {
+        //             type: 'error',
+        //             message: 'error'
+        //         }
+        //     })
+        // );
         return rejectWithValue(error);
     }
 });
@@ -85,14 +85,35 @@ const loginThunk = createAsyncThunk('auth/login', async (body, { dispatch, rejec
         dispatch(getMeThunk());
         return;
     } catch (error) {
-        dispatch(
-            openToast({
-                data: {
-                    type: 'error',
-                    message: 'error'
-                }
-            })
-        );
+        // dispatch(
+        //     openToast({
+        //         data: {
+        //             type: 'error',
+        //             message: 'error'
+        //         }
+        //     })
+        // );
+        return rejectWithValue(error);
+    }
+});
+
+const googleLoginThunk = createAsyncThunk('auth/login', async (_, { dispatch, rejectWithValue }) => {
+    try {
+        const res = await authService.logInByGoogle();
+        console.log(res);
+        // -----------
+        // localService.setItem(LOCAL_STORAGE.accessToken, JSON.stringify(res.data.accessToken));
+        // dispatch(getMeThunk());
+        return;
+    } catch (error) {
+        // dispatch(
+        //     openToast({
+        //         data: {
+        //             type: 'error',
+        //             message: 'error'
+        //         }
+        //     })
+        // );
         return rejectWithValue(error);
     }
 });
@@ -102,7 +123,7 @@ const logoutThunk = createAsyncThunk('auth/logout', async (_, { dispatch, reject
         await authService.logout();
         // -----------
         localService.removeItem(LOCAL_STORAGE.accessToken);
-        dispatch(setUser(null))
+        dispatch(setUser(null));
         return;
     } catch (error) {
         return rejectWithValue(error);
@@ -111,5 +132,5 @@ const logoutThunk = createAsyncThunk('auth/logout', async (_, { dispatch, reject
 
 const { reducer, actions } = authSlice;
 export const { setUser, removeUser } = actions;
-export { getMeThunk, loginThunk, logoutThunk };
+export { getMeThunk, loginThunk, logoutThunk, googleLoginThunk };
 export default reducer;

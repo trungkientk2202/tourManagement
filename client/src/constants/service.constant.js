@@ -21,14 +21,15 @@ const HTTP_STATUS_CODES = {
 };
 
 const API_PATHS = {
-  login: '/auth/sign_in',
-  register: '/auth/sign_up',
-  logout: '/user/logout',
-  refreshToken: '/auth/refresh_token',
-  changePassword: '/auth/change_password',
-  loadProfile: '/auth/load_profile',
+    logIn: '/auth/sign_in',
+    logInByGoogle: '/user/auth/google',
+    register: '/auth/sign_up',
+    logout: '/user/logout',
+    refreshToken: '/auth/refresh_token',
+    changePassword: '/auth/change_password',
+    loadProfile: '/auth/load_profile',
 
-  getUserById: '/user/:id',
+    getUserById: '/user/:id'
 };
 
 export { HTTP_METHODS, HTTP_STATUS_CODES, API_PATHS };

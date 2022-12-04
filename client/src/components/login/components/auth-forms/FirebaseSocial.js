@@ -12,7 +12,7 @@ const FirebaseSocial = () => {
     const matchDownSM = useMediaQuery(theme.breakpoints.down('sm'));
 
     const googleHandler = async () => {
-        // login || singup
+        window.location.replace(process.env.REACT_APP_SERVER_API_PATH + '/api/user/auth/google');
     };
 
     const twitterHandler = async () => {
