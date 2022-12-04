@@ -6,7 +6,7 @@ const global = require('../../global');
 const verifyCallback = async (accessToken, refreshToken, profile, done) => {
     console.log('Google profile ', profile);
     try{
-        const saveUser = await findUser({email: profile.email});
+        let saveUser = await findUser({email: profile.email});
         if (!saveUser) {
             saveUser = await addUser({
                 googleId: profile.id, 
@@ -16,7 +16,7 @@ const verifyCallback = async (accessToken, refreshToken, profile, done) => {
             });
         }
         global.user = saveUser;
-    }catch(error)
+    } catch(error)
     {
         console.log(error.message);
         done(error, profile);
