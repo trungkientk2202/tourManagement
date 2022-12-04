@@ -27,7 +27,7 @@ const verifyCallback = async (accessToken, refreshToken, profile, done) => {
 const checkLoggedIn = async (req, res, next) => {
     console.log('Current user is: ', req.user);
 
-    const isLoggedIn = req.isAuthenticated() && req.user;
+    const isLoggedIn = (req.isAuthenticated() && req.user) || global.user;
     if (!isLoggedIn) {
         return makeSuccessResponse(res, 401, {
             message: "You must login",
