@@ -3,7 +3,7 @@ const { addUser, findUser } = require("../../models/user.model")
 
 async function verifyCallback(accessToken, refreshToken, profile, done) {
     console.log('Google profile ', profile)
-    const user = findUser({email: profile.email})
+    const user = await findUser({email: profile.email})
     if (!user) {
         await addUser({id: profile.id, email: profile.email})
     }
