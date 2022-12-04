@@ -23,6 +23,17 @@ const getCurrentUser = async (req, res) => {
             error: "User not found!",
         });  
     }
+    else if(global.user) {
+        const getUser = await findUser({id: global.user.googleId});
+        if (getUser) {
+            return makeSuccessResponse(res, 200, {
+                data: getUser,
+            });
+        }    
+        return makeSuccessResponse(res, 404, {
+            error: "User not found!",
+        }); 
+    }
     else{
         return makeSuccessResponse(res, 404, {
             message: 'Missing user!',
