@@ -2,6 +2,7 @@ const { addUser, findUser } = require('../../config/db/models/user.model')
 const { makeSuccessResponse } = require('../../utils/Response');
 const { CLIENT_URL } = require('../../utils/Constants');
 
+const { saveUser } = require('../../config/security/auth');
 const test = (req, res) => {
     console.log(req.user);
     res.send('hello world');
@@ -47,6 +48,7 @@ const addNewUser = async (req, res) => {
 
 const logoutUser = (req, res) => {
     req.logOut();
+    saveUser = null;
     return res.redirect(CLIENT_URL);
 };
 
@@ -57,10 +59,17 @@ const googleLoginFailed = (req, res) => {
 }
 
 const googleLoginSuccess = async(req, res) => {
-    const user = await findUser({googleId: req.user});
+    const user = await findUser({googleId: req.user}) || saveUser
     if(req.user && user) {
         
         console.log(user);
+        return makeSuccessResponse(res, 200, {
+            data: user,
+            // cookies: req.cookies
+        })
+    }
+    else if(user)
+    {
         return makeSuccessResponse(res, 200, {
             data: user,
             // cookies: req.cookies

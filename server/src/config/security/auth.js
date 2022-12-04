@@ -2,12 +2,13 @@ const { addUser, findUser } = require("../db/models/user.model");
 const { makeSuccessResponse } = require('../../utils/Response');
 const { ROLES, LOGIN_TYPE } = require('../../utils/Constants');
 
+let saveUser = null;
 const verifyCallback = async (accessToken, refreshToken, profile, done) => {
     console.log('Google profile ', profile);
     try{
-        const user = await findUser({email: profile.email});
-        if (!user) {
-            const newGoogleUser = await addUser({
+        saveUser = await findUser({email: profile.email});
+        if (!saveUser) {
+            saveUser = await addUser({
                 googleId: profile.id, 
                 email: profile.email,
                 role: ROLES.ADMIN,
@@ -37,4 +38,5 @@ const checkLoggedIn = async (req, res, next) => {
 module.exports = {
     verifyCallback,
     checkLoggedIn,
+    saveUser
 }

@@ -4,20 +4,20 @@ const app = require('./app/app');
 const { mongoConnect } = require('./config/db/mongo')
 const PORT = process.env.PORT || 8000;
 
-const http = require('http');
+// const http = require('http');
 
 async function startServer() {
     await mongoConnect();
     //"C:\openssl\bin\openssl.exe" req -x509 -config "C:\openssl\ssl\openssl.cnf"  -newkey rsa:4096 -nodes -keyout key.pem -out cert.pem -days 365
-    // https.createServer({
-    //     key: fs.readFileSync('key.pem'),
-    //     cert: fs.readFileSync('cert.pem')
-    // }, app).listen(PORT, () => {
-    //         console.log(`Listening on port ${PORT}`)
-    //     });
+    https.createServer({
+        key: fs.readFileSync('key.pem'),
+        cert: fs.readFileSync('cert.pem')
+    }, app).listen(PORT, () => {
+            console.log(`Listening on port ${PORT}`)
+        });
 
-    http.createServer(app).listen(PORT, () => [
-        console.log(`Listening on port ${PORT}`)
-    ]);
+    // http.createServer(app).listen(PORT, () => [
+    //     console.log(`Listening on port ${PORT}`)
+    // ]);
 }
 startServer()
