@@ -1,46 +1,86 @@
-const {
-    addUser, 
-    getUserByUsernameAndPassword,
-    getLatestId,
-    findUser
-} = require('../../models/user.model')
+const { addUser, findUser } = require('../../config/db/models/user.model')
+const { makeSuccessResponse } = require('../../utils/Response');
+const { CLIENT_URL } = require('../../utils/Constants');
 
 const test = (req, res) => {
-    console.log('hello')
+    console.log(req.user);
     res.send('hello world');
-}
+};
 
-async function httpGetUser(req, res) {
-    const user = req.user
-    console.log(user)
-    if (user) {
-        const re = await findUser({id: user})
-        console.log(re)
-        if (re) {
-            const getUser = {
-                id: re.id,
-                email: re.email
-            }
-            return res.status(200).json(getUser)
-        }       
+const getCurrentUser = async (req, res) => {
+    const reqUser = req?.user;
+    if (reqUser) {
+        console.log(reqUser);
+        const getUser = await findUser({id: reqUser});
+        if (getUser) {
+            return makeSuccessResponse(res, 200, {
+                data: getUser,
+            });
+        }    
+        return makeSuccessResponse(res, 404, {
+            error: "User not found!",
+        });  
     }
-    return res.status(404).json({
-        error: "User not found!"
-    })
-}
-async function httpAddNewUser(req, res) {
-    const user = req.body
+    else{
+        return makeSuccessResponse(res, 404, {
+            message: 'Missing user!',
+        });
+    }
+};
+
+const addNewUser = async (req, res) => {
+    const user = req.body;
     if (!user.email) {
         return res.status(404).json({
             error: "Missing user's property!"
         })
     }
-    await addUser(user)
-    return res.status(201).json(user)
+    const newUser = await addUser(user);
+    if(newUser)
+        return makeSuccessResponse(res, 201, {
+            data: newUser,
+        })
+    return makeSuccessResponse(res, 500, {
+        message: "Something went wrong!",
+    })
+};
+
+const logoutUser = (req, res) => {
+    req.logOut();
+    return res.redirect(CLIENT_URL);
+};
+
+const googleLoginFailed = (req, res) => {
+    return makeSuccessResponse(res, 401, {
+        message: "Login google failed"
+    });
 }
+
+const googleLoginSuccess = async(req, res) => {
+    const user = await findUser({googleId: req.user});
+    if(req.user && user) {
+        
+        console.log(user);
+        return makeSuccessResponse(res, 200, {
+            data: user,
+            // cookies: req.cookies
+        })
+    }
+    return makeSuccessResponse(res, 404, {
+        message: "User not found"
+    })
+}
+
+const getUser = async (req, res) => {
+
+};
 
 module.exports = {
     test, 
-    httpAddNewUser,
-    httpGetUser
+    addNewUser,
+    getCurrentUser,
+    getUser,
+    logoutUser,
+    googleLoginFailed,
+    googleLoginSuccess
 }

@@ -7,10 +7,10 @@ const cookieSession = require('cookie-session');
 const helmet = require('helmet');
 const passport = require('passport');
 const {Strategy} = require('passport-google-oauth2')
-const AUTH_CONFIG = require('../config/security/auth')
-const {verifyCallback} = require('../config/security/login');
+const { AUTH_CONFIG } = require('../utils/Constants')
+const { verifyCallback } = require('../config/security/auth');
 
-require('dotenv').config();
+const { COOKIE_KEY_1, COOKIE_KEY_2 } = require('../utils/Constants');
 
 passport.use(new Strategy(AUTH_CONFIG, verifyCallback))
 passport.serializeUser((user, done) => {
@@ -22,7 +22,9 @@ passport.deserializeUser((id, done) => {
 })
 const app = express();
 app.use(cors({
-    origin: "http://localhost:3000"
+    origin: "http://localhost:3000",
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true,
 }));
 
 // config security
@@ -30,24 +32,10 @@ app.use(helmet());
 app.use(cookieSession({
     name: 'session',
     maxAge: 60 * 60 * 24 * 1000,
-    keys: [process.env.SECRET_KEY1, process.env.SECRET_KEY2]
+    keys: [COOKIE_KEY_1, COOKIE_KEY_2]
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-// app.get('/auth/google', passport.authenticate('google', {
-//     scope: ['email'],
-// }), )
-// app.get('/auth/google/callback', passport.authenticate('google', {
-//     failureRedirect: '/failure',
-//     successRedirect: '/',
-//     session: true,
-// }), (req, res) => {
-//     console.log('Google is called us back!')
-// })
-// app.get('/auth/logout', (req, res) => {
-//     req.logOut()
-//     return res.redirect('/')
-// })
 
 // config app
 app.use(morgan('combined'));

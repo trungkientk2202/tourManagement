@@ -1,14 +1,40 @@
-require('dotenv').config()
+const { addUser, findUser } = require("../db/models/user.model");
+const { makeSuccessResponse } = require('../../utils/Response');
+const { ROLES, LOGIN_TYPE } = require('../../utils/Constants');
 
-const config = {
-    CLIENT_ID: process.env.CLIENT_ID,
-    CLIENT_SECRET: process.env.CLIENT_SECRET,
+const verifyCallback = async (accessToken, refreshToken, profile, done) => {
+    console.log('Google profile ', profile);
+    try{
+        const user = await findUser({email: profile.email});
+        if (!user) {
+            const newGoogleUser = await addUser({
+                googleId: profile.id, 
+                email: profile.email,
+                role: ROLES.ADMIN,
+                type: LOGIN_TYPE.GOOGLE
+            });
+        }
+    }catch(error)
+    {
+        console.log(error.message);
+        done(error, profile);
+    }
+    done(null, profile);   
 }
 
-const AUTH_CONFIG = {
-    callbackURL: '/api/user/auth/google/callback',
-    clientID: config.CLIENT_ID,
-    clientSecret: config.CLIENT_SECRET
+const checkLoggedIn = async (req, res, next) => {
+    console.log('Current user is: ', req.user);
+
+    const isLoggedIn = req.isAuthenticated() && req.user;
+    if (!isLoggedIn) {
+        return makeSuccessResponse(res, 401, {
+            message: "You must login",
+        })
+    }
+    next();  
 }
 
-module.exports = AUTH_CONFIG
+module.exports = {
+    verifyCallback,
+    checkLoggedIn,
+}
