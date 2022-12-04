@@ -1,7 +1,6 @@
 import { LOCAL_STORAGE } from '../../constants/common.constant';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import * as authService from '../../services/auth.service';
-// import { openToast } from '@features/toast/toast.slice';
 import * as localService from '../../services/local.service';
 
 const initialValues = {
@@ -24,10 +23,10 @@ const authSlice = createSlice({
     },
     extraReducers(builder) {
         builder
-            .addCase(logInThunk.pending, (state, _) => {
+            .addCase(getMeThunk.pending, (state, _) => {
                 state.loading = true;
             })
-            .addCase(logInThunk.fulfilled, (state, action) => {
+            .addCase(getMeThunk.fulfilled, (state, action) => {
                 state.currentUser = action.payload;
                 state.loading = false;
             })
@@ -66,14 +65,6 @@ const getMeThunk = createAsyncThunk('auth/getMe', async (_, { dispatch, rejectWi
         return res.data;
     } catch (error) {
         localService.removeItem(LOCAL_STORAGE.currentUser);
-        // dispatch(
-        //     openToast({
-        //         data: {
-        //             type: 'error',
-        //             message: 'error'
-        //         }
-        //     })
-        // );
         console.log(error);
         return rejectWithValue(error);
     }
@@ -87,14 +78,6 @@ const logInThunk = createAsyncThunk('auth/logIn', async (body, { dispatch, rejec
         dispatch(getMeThunk());
         return;
     } catch (error) {
-        // dispatch(
-        //     openToast({
-        //         data: {
-        //             type: 'error',
-        //             message: 'error'
-        //         }
-        //     })
-        // );
         return rejectWithValue(error);
     }
 });

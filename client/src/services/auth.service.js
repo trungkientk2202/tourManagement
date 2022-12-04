@@ -3,7 +3,7 @@ import authHeader from './auth-header';
 import { API_PATHS, HTTP_METHODS } from '../constants/service.constant';
 
 const logIn = (body) => {
-    return apiService.makeRequest(HTTP_METHODS.post, API_PATHS.logIn, {}, {}, body);
+    return apiService.makeRequest(HTTP_METHODS.get, API_PATHS.logIn, {}, {}, body);
 };
 
 const logout = () => {
