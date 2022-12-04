@@ -1,4 +1,3 @@
-
 const {
     addUser, 
     getUserByUsernameAndPassword,
@@ -18,7 +17,11 @@ async function httpGetUser(req, res) {
         const re = await findUser({id: user})
         console.log(re)
         if (re) {
-            return res.status(200).json(re)
+            const getUser = {
+                id: re.id,
+                email: re.email
+            }
+            return res.status(200).json(getUser)
         }       
     }
     return res.status(404).json({
