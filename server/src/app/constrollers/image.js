@@ -1,5 +1,7 @@
 const multer = require('multer');
 const path = require('path');
+const { makeSuccessResponse } = require('../../utils/Response')
+const { FILE_TYPE } = require('../../utils/Constants');
 
 let fileName;
 const storage = multer.diskStorage({
@@ -18,23 +20,33 @@ const storage = multer.diskStorage({
 });
 const uploadImage = multer({storage});
 
-const uploadImageHandler = (req, res) => {
+const uploadImageHandler =  (req, res) => {
     try{
         console.log("####req: ", req.file);
         if(req.file)
         {
-            return res.status(200).json({
-                message: 'Uploaded successfully',
-                file: req.file.filename
-            })
+            for(const key in FILE_TYPE)
+            {
+                if(req.file.mimetype.includes(key.toLowerCase()))
+                {
+                    type = FILE_TYPE[key]
+                    break;
+                }
+            }
+            return makeSuccessResponse(res, 200, {
+                data: {
+                    file: req.file.filename,
+                    type
+                }
+            });
         }
         else
-            return res.status(401).json({
+            return makeSuccessResponse(res, 401, {
                 message: 'No file selected'
-            })
+            });
 
     }catch(error){
-        console.log(error.message);
+        console.log(error);
         return res.status(500).json({
             message: error.message
             })
