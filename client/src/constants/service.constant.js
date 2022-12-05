@@ -1,5 +1,3 @@
-import { uploadMedia } from '../services/media.service';
-
 const HTTP_METHODS = {
     post: 'post',
     get: 'get',
