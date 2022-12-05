@@ -61,7 +61,7 @@ const authSlice = createSlice({
 const getMeThunk = createAsyncThunk('auth/getMe', async (_, { dispatch, rejectWithValue }) => {
     try {
         const res = await authService.loadUser();
-        console.log(res.data)
+        localService.setItem(LOCAL_STORAGE.currentUser, JSON.stringify(res.data?.data));
         return res.data?.data;
     } catch (error) {
         localService.removeItem(LOCAL_STORAGE.currentUser);
@@ -72,8 +72,8 @@ const getMeThunk = createAsyncThunk('auth/getMe', async (_, { dispatch, rejectWi
 const logInThunk = createAsyncThunk('auth/logIn', async (body, { dispatch, rejectWithValue }) => {
     try {
         const res = await authService.logIn(body);
+        console.log(res);
         // -----------
-        localService.setItem(LOCAL_STORAGE.currentUser, JSON.stringify(res.data.user));
         dispatch(getMeThunk());
         return;
     } catch (error) {

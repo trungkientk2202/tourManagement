@@ -8,6 +8,8 @@ import Typography from '@mui/material/Typography';
 import MenuIcon from '@mui/icons-material/Menu';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import { useDispatch } from 'react-redux';
+import { logoutThunk } from '../../../redux/auth/auth.slice';
 
 const drawerWidth = 240;
 
@@ -30,6 +32,12 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 function Header({ open, handleDrawerOpen }) {
+    const dispatch = useDispatch();
+
+    const handleLogOut = () => {
+        dispatch(logoutThunk());
+    };
+
     return (
         <AppBar position="fixed" open={open}>
             <Toolbar sx={{ minHeight: 'unset' }}>
@@ -51,7 +59,7 @@ function Header({ open, handleDrawerOpen }) {
                             Intelligent Traffic Management System
                         </Typography>
                     </Stack>
-                    <Button variant="text" sx={{ color: '#fff' }}>
+                    <Button variant="text" sx={{ color: '#fff' }} onClick={handleLogOut}>
                         Log out <LogoutIcon sx={{ ml: 2 }} />
                     </Button>
                 </Stack>

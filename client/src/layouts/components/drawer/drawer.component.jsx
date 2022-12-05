@@ -14,27 +14,33 @@ import PersonIcon from '@mui/icons-material/Person';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import SpeedIcon from '@mui/icons-material/Speed';
 import CameraIcon from '@mui/icons-material/Camera';
+import { URL_PATHS } from '../../../constants/routes.constant';
+import { Link } from 'react-router-dom';
 
 const drawerWidth = 240;
 
 const menuList1 = [
     {
         name: 'Home',
-        icon: <SpeedIcon />
+        icon: <SpeedIcon />,
+        link: URL_PATHS.HOME + URL_PATHS.DASHBOARD
     },
     {
         name: 'Envidance',
-        icon: <ShowChartIcon />
+        icon: <ShowChartIcon />,
+        link: URL_PATHS.HOME + URL_PATHS.EVIDENCE
     },
     {
-        name: 'Profile',
-        icon: <CameraIcon />
+        name: 'Challan Details',
+        icon: <CameraIcon />,
+        link: URL_PATHS.HOME + URL_PATHS.CHALLAN
     }
 ];
 const menuList2 = [
     {
         name: 'Profile',
-        icon: <PersonIcon />
+        icon: <PersonIcon />,
+        link: '/'
     }
 ];
 
@@ -97,22 +103,24 @@ export default function MiniDrawer({ open, handleDrawerClose }) {
             <List>
                 {menuList1.map((text, index) => (
                     <ListItem key={text.name} disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
-                            sx={{
-                                minHeight: 48,
-                                justifyContent: open ? 'initial' : 'center',
-                                px: 2.5
-                            }}>
-                            <ListItemIcon
+                        <Link to={text?.link}>
+                            <ListItemButton
                                 sx={{
-                                    minWidth: 0,
-                                    mr: open ? 3 : 'auto',
-                                    justifyContent: 'center'
+                                    minHeight: 48,
+                                    justifyContent: open ? 'initial' : 'center',
+                                    px: 2.5
                                 }}>
-                                {text.icon}
-                            </ListItemIcon>
-                            <ListItemText primary={text.name} sx={{ opacity: open ? 1 : 0 }} />
-                        </ListItemButton>
+                                <ListItemIcon
+                                    sx={{
+                                        minWidth: 0,
+                                        mr: open ? 3 : 'auto',
+                                        justifyContent: 'center'
+                                    }}>
+                                    {text.icon}
+                                </ListItemIcon>
+                                <ListItemText primary={text.name} sx={{ opacity: open ? 1 : 0 }} />
+                            </ListItemButton>
+                        </Link>
                     </ListItem>
                 ))}
             </List>
@@ -120,22 +128,24 @@ export default function MiniDrawer({ open, handleDrawerClose }) {
             <List>
                 {menuList2.map((text, index) => (
                     <ListItem key={text.name} disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
-                            sx={{
-                                minHeight: 48,
-                                justifyContent: open ? 'initial' : 'center',
-                                px: 2.5
-                            }}>
-                            <ListItemIcon
+                        <Link to={text?.link}>
+                            <ListItemButton
                                 sx={{
-                                    minWidth: 0,
-                                    mr: open ? 3 : 'auto',
-                                    justifyContent: 'center'
+                                    minHeight: 48,
+                                    justifyContent: open ? 'initial' : 'center',
+                                    px: 2.5
                                 }}>
-                                {text.icon}
-                            </ListItemIcon>
-                            <ListItemText primary={text.name} sx={{ opacity: open ? 1 : 0 }} />
-                        </ListItemButton>
+                                <ListItemIcon
+                                    sx={{
+                                        minWidth: 0,
+                                        mr: open ? 3 : 'auto',
+                                        justifyContent: 'center'
+                                    }}>
+                                    {text.icon}
+                                </ListItemIcon>
+                                <ListItemText primary={text.name} sx={{ opacity: open ? 1 : 0 }} />
+                            </ListItemButton>
+                        </Link>
                     </ListItem>
                 ))}
             </List>

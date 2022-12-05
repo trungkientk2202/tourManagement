@@ -7,7 +7,7 @@ const logIn = (body) => {
 };
 
 const logout = () => {
-    return apiService.makeRequest(HTTP_METHODS.put, API_PATHS.logout, {}, authHeader(), {});
+    return apiService.makeRequest(HTTP_METHODS.get, API_PATHS.logout, {}, {}, {});
 };
 
 const loadUser = () => apiService.makeRequest(HTTP_METHODS.get, API_PATHS.loadProfile, {}, authHeader(), {});
