@@ -1,11 +1,9 @@
 const { addUser, findUser } = require('../../config/db/models/user.model')
 const { makeSuccessResponse } = require('../../utils/Response');
 const { CLIENT_URL } = require('../../utils/Constants');
-const global = require('../../global');
 
 const test = (req, res) => {
     console.log(req.user);
-    console.log("global: ", global.user);
     res.send('hello world');
 };
 
@@ -22,17 +20,6 @@ const getCurrentUser = async (req, res) => {
         return makeSuccessResponse(res, 404, {
             error: "User not found!",
         });  
-    }
-    else if(global.user) {
-        const getUser = await findUser({id: global.user.googleId});
-        if (getUser) {
-            return makeSuccessResponse(res, 200, {
-                data: getUser,
-            });
-        }    
-        return makeSuccessResponse(res, 404, {
-            error: "User not found!",
-        }); 
     }
     else{
         return makeSuccessResponse(res, 404, {
@@ -69,19 +56,23 @@ const googleLoginFailed = (req, res) => {
         message: "Login google failed"
     });
 }
+// fetch('https://localhost:8000/api/user/auth/google/login/success', {method: "GET", headers: {"Content-Type": "application/json" }, credentials: "same-origin" }).then(res => console.log(res))
+// fetch("http://localhost:8000/api/user/auth/google/login/success", {
+//         method: "GET",
+//         credentials: "include",
+//         headers: {
+//           Accept: "application/json",
+//           "Content-Type": "application/json",
+//           "Access-Control-Allow-Credentials": true,
+//         },
+//       })
 
 const googleLoginSuccess = async(req, res) => {
-    const user = await findUser({googleId: req.user}) || global.user
+    console.log(req.user);
+    const user = await findUser({googleId: req.user});
     if(req.user && user) {
         
         console.log(user);
-        return makeSuccessResponse(res, 200, {
-            data: user,
-            // cookies: req.cookies
-        })
-    }
-    else if(user)
-    {
         return makeSuccessResponse(res, 200, {
             data: user,
             // cookies: req.cookies
