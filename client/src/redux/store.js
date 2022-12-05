@@ -1,8 +1,10 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import authReducer from './auth/auth.slice';
+import mediaReducer from './media/media.slice';
 
 const rootReducer = combineReducers({
-    auth: authReducer
+    auth: authReducer,
+    media: mediaReducer
 });
 
 const store = configureStore({

@@ -1,3 +1,5 @@
+import { uploadMedia } from '../services/media.service';
+
 const HTTP_METHODS = {
     post: 'post',
     get: 'get',
@@ -29,7 +31,10 @@ const API_PATHS = {
     changePassword: '/auth/change_password',
     loadProfile: '/user/get-current',
 
-    getUserById: '/user/:id'
+    getUserById: '/user/:id',
+
+    uploadMedia: '/image-video/upload',
+    getMedia: '/image-video'
 };
 
 export { HTTP_METHODS, HTTP_STATUS_CODES, API_PATHS };

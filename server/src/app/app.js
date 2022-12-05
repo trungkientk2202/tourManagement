@@ -30,7 +30,9 @@ app.get('/*', (req, res) => {
 app.use(express.json());
 
 // config security
-app.use(helmet());
+app.use(helmet({
+    crossOriginResourcePolicy: false,
+}));
 app.use(cookieSession({
     name: 'session',
     maxAge: 60 * 60 * 24 * 1000,
