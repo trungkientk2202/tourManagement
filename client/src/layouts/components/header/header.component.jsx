@@ -1,66 +1,61 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
+import MuiAppBar from '@mui/material/AppBar';
+import { styled } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
+import LogoutIcon from '@mui/icons-material/Logout';
 import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
-import { MenuItem } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const drawerWidth = 240;
 
-function Header() {
-    const [anchorElUser, setAnchorElUser] = React.useState(null);
+const AppBar = styled(MuiAppBar, {
+    shouldForwardProp: (prop) => prop !== 'open'
+})(({ theme, open }) => ({
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(['width', 'margin'], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen
+    }),
+    ...(open && {
+        marginLeft: drawerWidth,
+        width: `calc(100% - ${drawerWidth}px)`,
+        transition: theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen
+        })
+    })
+}));
 
-    const handleOpenUserMenu = (event) => {
-        setAnchorElUser(event.currentTarget);
-    };
-
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
-    };
-
+function Header({ open, handleDrawerOpen }) {
     return (
-        <AppBar position="static">
-            <Container maxWidth="xl">
-                <Toolbar disableGutters>
-                    <Typography variant="h6" noWrap component="a" href="/" sx={{}}>
-                        Intelligent Traffic Management System
-                    </Typography>
-
-                    <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
-                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                            </IconButton>
-                        </Tooltip>
-                        <Menu
-                            sx={{ mt: '45px' }}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right'
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right'
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}>
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center">{setting}</Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu>
-                    </Box>
-                </Toolbar>
-            </Container>
+        <AppBar position="fixed" open={open}>
+            <Toolbar sx={{ minHeight: 'unset' }}>
+                <Stack flex={1} direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
+                    <Stack direction={'row'} alignItems={'center'}>
+                        <IconButton
+                            color="inherit"
+                            aria-label="open drawer"
+                            onClick={handleDrawerOpen}
+                            edge="start"
+                            sx={{
+                                marginRight: 5,
+                                marginLeft: 0,
+                                ...(open && { display: 'none' })
+                            }}>
+                            <MenuIcon />
+                        </IconButton>
+                        <Typography variant="h6" noWrap component="div">
+                            Intelligent Traffic Management System
+                        </Typography>
+                    </Stack>
+                    <Button variant="text" sx={{ color: '#fff' }}>
+                        Log out <LogoutIcon sx={{ ml: 2 }} />
+                    </Button>
+                </Stack>
+            </Toolbar>
         </AppBar>
     );
 }

@@ -72,8 +72,9 @@ const googleLoginFailed = (req, res) => {
 
 const googleLoginSuccess = async(req, res) => {
     const user = await findUser({googleId: req.user}) || global.user
+    console.log(user, global.user);
     if(req.user && user) {
-        
+
         console.log(user);
         return makeSuccessResponse(res, 200, {
             data: user,

@@ -25,3 +25,4 @@ router.get('/auth/google/callback', passport.authenticate('google', {
     session: true,
 }));
 
+module.exports = router;

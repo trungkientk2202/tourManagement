@@ -61,11 +61,10 @@ const authSlice = createSlice({
 const getMeThunk = createAsyncThunk('auth/getMe', async (_, { dispatch, rejectWithValue }) => {
     try {
         const res = await authService.loadUser();
-
-        return res.data;
+        console.log(res.data)
+        return res.data?.data;
     } catch (error) {
         localService.removeItem(LOCAL_STORAGE.currentUser);
-        console.log(error);
         return rejectWithValue(error);
     }
 });
@@ -74,7 +73,7 @@ const logInThunk = createAsyncThunk('auth/logIn', async (body, { dispatch, rejec
     try {
         const res = await authService.logIn(body);
         // -----------
-        localService.setItem(LOCAL_STORAGE.accessToken, JSON.stringify(res.data.accessToken));
+        localService.setItem(LOCAL_STORAGE.currentUser, JSON.stringify(res.data.user));
         dispatch(getMeThunk());
         return;
     } catch (error) {
