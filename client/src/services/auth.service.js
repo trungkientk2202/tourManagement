@@ -3,17 +3,13 @@ import authHeader from './auth-header';
 import { API_PATHS, HTTP_METHODS } from '../constants/service.constant';
 
 const logIn = (body) => {
-  return apiService.makeRequest(HTTP_METHODS.post, API_PATHS.login, {}, {}, body);
-};
-
-const logInByGoogle = () => {
-    return apiService.makeRequest(HTTP_METHODS.get, API_PATHS.logInByGoogle, {}, {}, {});
+    return apiService.makeRequest(HTTP_METHODS.get, API_PATHS.logIn, {}, {}, body);
 };
 
 const logout = () => {
-    return apiService.makeRequest(HTTP_METHODS.put, API_PATHS.logout, {}, authHeader(), {});
+    return apiService.makeRequest(HTTP_METHODS.get, API_PATHS.logout, {}, {}, {});
 };
 
 const loadUser = () => apiService.makeRequest(HTTP_METHODS.get, API_PATHS.loadProfile, {}, authHeader(), {});
 
-export { logIn, logout, loadUser, logInByGoogle };
+export { logIn, logout, loadUser };

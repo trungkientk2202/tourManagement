@@ -1,7 +1,6 @@
 import { LOCAL_STORAGE } from '../../constants/common.constant';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import * as authService from '../../services/auth.service';
-// import { openToast } from '@features/toast/toast.slice';
 import * as localService from '../../services/local.service';
 
 const initialValues = {
@@ -35,13 +34,13 @@ const authSlice = createSlice({
                 state.error = action.payload;
                 state.loading = false;
             })
-            .addCase(loginThunk.pending, (state) => {
+            .addCase(logInThunk.pending, (state) => {
                 state.loading = true;
             })
-            .addCase(loginThunk.fulfilled, (state) => {
+            .addCase(logInThunk.fulfilled, (state) => {
                 state.loading = false;
             })
-            .addCase(loginThunk.rejected, (state, action) => {
+            .addCase(logInThunk.rejected, (state, action) => {
                 state.error = action.payload;
                 state.loading = false;
             })
@@ -62,58 +61,22 @@ const authSlice = createSlice({
 const getMeThunk = createAsyncThunk('auth/getMe', async (_, { dispatch, rejectWithValue }) => {
     try {
         const res = await authService.loadUser();
-        return res.data;
+        localService.setItem(LOCAL_STORAGE.currentUser, JSON.stringify(res.data?.data));
+        return res.data?.data;
     } catch (error) {
-        localService.removeItem(LOCAL_STORAGE.accessToken);
-        // dispatch(
-        //     openToast({
-        //         data: {
-        //             type: 'error',
-        //             message: 'error'
-        //         }
-        //     })
-        // );
+        localService.removeItem(LOCAL_STORAGE.currentUser);
         return rejectWithValue(error);
     }
 });
 
-const loginThunk = createAsyncThunk('auth/login', async (body, { dispatch, rejectWithValue }) => {
+const logInThunk = createAsyncThunk('auth/logIn', async (body, { dispatch, rejectWithValue }) => {
     try {
         const res = await authService.logIn(body);
+        console.log(res);
         // -----------
-        localService.setItem(LOCAL_STORAGE.accessToken, JSON.stringify(res.data.accessToken));
         dispatch(getMeThunk());
         return;
     } catch (error) {
-        // dispatch(
-        //     openToast({
-        //         data: {
-        //             type: 'error',
-        //             message: 'error'
-        //         }
-        //     })
-        // );
-        return rejectWithValue(error);
-    }
-});
-
-const googleLoginThunk = createAsyncThunk('auth/login', async (_, { dispatch, rejectWithValue }) => {
-    try {
-        const res = await authService.logInByGoogle();
-        console.log(res);
-        // -----------
-        // localService.setItem(LOCAL_STORAGE.accessToken, JSON.stringify(res.data.accessToken));
-        // dispatch(getMeThunk());
-        return;
-    } catch (error) {
-        // dispatch(
-        //     openToast({
-        //         data: {
-        //             type: 'error',
-        //             message: 'error'
-        //         }
-        //     })
-        // );
         return rejectWithValue(error);
     }
 });
@@ -122,8 +85,8 @@ const logoutThunk = createAsyncThunk('auth/logout', async (_, { dispatch, reject
     try {
         await authService.logout();
         // -----------
-        localService.removeItem(LOCAL_STORAGE.accessToken);
-        dispatch(setUser(null));
+        localService.removeItem(LOCAL_STORAGE.currentUser);
+        dispatch(removeUser());
         return;
     } catch (error) {
         return rejectWithValue(error);
@@ -132,5 +95,5 @@ const logoutThunk = createAsyncThunk('auth/logout', async (_, { dispatch, reject
 
 const { reducer, actions } = authSlice;
 export const { setUser, removeUser } = actions;
-export { getMeThunk, loginThunk, logoutThunk, googleLoginThunk };
+export { getMeThunk, logInThunk, logoutThunk };
 export default reducer;

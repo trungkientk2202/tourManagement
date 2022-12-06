@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // material-ui
 import { Grid, Stack, Typography, Box } from '@mui/material';
@@ -8,8 +8,20 @@ import { Grid, Stack, Typography, Box } from '@mui/material';
 // project import
 import Card from '../shared/card/card.component';
 import AuthLogin from './components/auth-forms/auth-login.component';
+import { useSelector } from 'react-redux';
+import { LOCAL_STORAGE } from '../../constants/common.constant';
+import { selectCurrentUser } from '../../redux/auth/auth.selectors';
+import * as localService from '../../services/local.service';
 
 const Login = () => {
+    const currentUser = useSelector(selectCurrentUser);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const _currentUser = localService.getItem(LOCAL_STORAGE.currentUser);
+        if (_currentUser && currentUser) navigate('/dashboard');
+    }, [currentUser, navigate]);
+
     return (
         <Box sx={{ minHeight: '100vh' }}>
             <Grid

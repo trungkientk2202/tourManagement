@@ -12,7 +12,7 @@ const FirebaseSocial = () => {
     const matchDownSM = useMediaQuery(theme.breakpoints.down('sm'));
 
     const googleHandler = async () => {
-        window.location.replace(process.env.REACT_APP_SERVER_API_PATH + '/api/user/auth/google');
+        window.open(process.env.REACT_APP_SERVER_API_PATH + '/api/user/auth/google', '_self');
     };
 
     const twitterHandler = async () => {

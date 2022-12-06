@@ -7,24 +7,25 @@ import { useNavigate } from 'react-router-dom';
 import { getItem } from './services/local.service';
 import { URL_PATHS } from './constants/routes.constant';
 import { LOCAL_STORAGE } from './constants/common.constant';
-// import { useAppDispatch } from './hooks/hooks';
-// import { getMeThunk } from '@features/auth/auth.slice';
-// import { selectCurrentUser } from '@features/auth/auth.selectors';
-// import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import ScrollTop from './components/shared/scroll-top/scroll-top.component';
+import { logInThunk, getMeThunk } from './redux/auth/auth.slice';
+import { selectCurrentUser } from './redux/auth/auth.selectors';
 
 function App() {
     const navigate = useNavigate();
-    // const dispatch = useAppDispatch();
-    // const currentUser = useSelector(selectCurrentUser);
+    const dispatch = useDispatch();
+    const currentUser = useSelector(selectCurrentUser);
 
     useEffect(() => {
-        const _accessToken = getItem(LOCAL_STORAGE.accessToken);
-        if (_accessToken) {
-            // if (!currentUser) dispatch(getMeThunk());
+        const _currentUser = getItem(LOCAL_STORAGE.currentUser);
+        if (_currentUser) {
+            if (!currentUser) dispatch(getMeThunk());
             if (location.pathname === URL_PATHS.HOME) {
                 navigate('/dashboard');
             }
+        } else {
+            dispatch(logInThunk());
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.pathname]);

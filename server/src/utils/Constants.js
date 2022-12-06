@@ -23,9 +23,16 @@ const ROLES = {
     NORMAL_USER: 'NORMAL'
 }
 
+const FILE_TYPE = {
+    IMAGE: 'img',
+    VIDEO: 'video',
+    AUDIO: 'audio'
+}
+
 module.exports = {
     ...CONFIG,
     LOGIN_TYPE,
     ROLES,
-    AUTH_CONFIG
+    AUTH_CONFIG,
+    FILE_TYPE
 }

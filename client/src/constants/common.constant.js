@@ -3,8 +3,9 @@ const PARAMS = {
 };
 
 const LOCAL_STORAGE = {
-  currentUser: 'currentUser',
-  accessToken: 'accessToken',
+    currentUser: 'currentUser',
+    accessToken: 'accessToken',
+    session: 'session'
 };
 
 export { PARAMS, LOCAL_STORAGE };

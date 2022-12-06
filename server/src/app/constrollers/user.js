@@ -16,10 +16,10 @@ const getCurrentUser = async (req, res) => {
             return makeSuccessResponse(res, 200, {
                 data: getUser,
             });
-        }    
+        }
         return makeSuccessResponse(res, 404, {
             error: "User not found!",
-        });  
+        });
     }
     else{
         return makeSuccessResponse(res, 404, {
@@ -47,7 +47,9 @@ const addNewUser = async (req, res) => {
 
 const logoutUser = (req, res) => {
     req.logOut();
-    return res.redirect(CLIENT_URL);
+    return makeSuccessResponse(res, 200, {
+        message: "Logout"
+    });
 };
 
 const googleLoginFailed = (req, res) => {
@@ -55,11 +57,22 @@ const googleLoginFailed = (req, res) => {
         message: "Login google failed"
     });
 }
+// fetch('https://localhost:8000/api/user/auth/google/login/success', {method: "GET", headers: {"Content-Type": "application/json" }, credentials: "same-origin" }).then(res => console.log(res))
+// fetch("http://localhost:8000/api/user/auth/google/login/success", {
+//         method: "GET",
+//         credentials: "include",
+//         headers: {
+//           Accept: "application/json",
+//           "Content-Type": "application/json",
+//           "Access-Control-Allow-Credentials": true,
+//         },
+//       })
 
 const googleLoginSuccess = async(req, res) => {
+    console.log(req.user);
     const user = await findUser({googleId: req.user});
     if(req.user && user) {
-        
+
         console.log(user);
         return makeSuccessResponse(res, 200, {
             data: user,
@@ -76,7 +89,7 @@ const getUser = async (req, res) => {
 };
 
 module.exports = {
-    test, 
+    test,
     addNewUser,
     getCurrentUser,
     getUser,
