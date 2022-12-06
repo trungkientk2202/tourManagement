@@ -7,8 +7,10 @@ const vehicleSchema = new mongoose.Schema({
     licensePlate: {
         type: String,
         require: true,
-        image: String,
     }, 
+    type: {
+        type: String,
+    }
 })
 
 module.exports =  mongoose.model('Vehicle', vehicleSchema)

@@ -9,7 +9,6 @@ const { CLIENT_URL } = require('../utils/Constants');
 router.get('/test', checkLoggedIn, test);
 router.get('/get-current', checkLoggedIn, getCurrentUser);
 router.get('/auth/logout', logoutUser);
-
 router.get('/auth/google', passport.authenticate('google', {
     scope: ['email'],
 }), (req, res) => {
