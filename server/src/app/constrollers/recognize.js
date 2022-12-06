@@ -1,10 +1,14 @@
 const { plateRecognize, addVehicle } = require('../../config/db/models/vehicle.model')
+const {uploadImageHandler} = require('./image')
 
 async function httpPlateRecognition(req, res) {
     const file = req.file
-    console.log(req)
+    console.log('File: ', file)
     if (file) {
-        const vehicle = plateRecognize(file)
+        console.log('start')
+        // await uploadImageHandler(req, res)
+        const vehicle = await plateRecognize(file)
+        console.log('Vehicle: ', vehicle)
         if (vehicle) {
             return res.status(200).json(vehicle)
         }
