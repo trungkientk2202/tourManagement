@@ -1,4 +1,4 @@
-const vehicles = require('./vehicle.mongo')
+const {addVehicle} = require('./vehicle.model')
 const faults = require('./fault.mongo')
 const violations = require('./violation.mongo')
 
@@ -12,19 +12,7 @@ async function findViolation(filter) {
     }
 }
 
-async function addVehicle(vehicle) {
-    try {
-        await vehicles.updateOne({licensePlate: vehicle.licensePlate}, {
-            id: vehicle.id ,licensePlate: vehicle
-        }, {
-            upsert: true
-        })
-        return vehicle
-    } catch(err) {
-        console.log(err)
-        return {}
-    }
-}
+
 
 async function addFault(fault) {
     try {

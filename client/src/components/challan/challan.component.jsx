@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { uploadMediaThunk } from '../../redux/media/media.slice';
+import { uploadMediaThunk} from '../../redux/media/media.slice';
 import Media from './components/media/media.component';
 import selectMedia from '../../redux/media/media.selectors';
 import { useSelector } from 'react-redux';

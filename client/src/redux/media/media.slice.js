@@ -36,7 +36,6 @@ const uploadMediaThunk = createAsyncThunk('media/upload', async (body, { dispatc
         return rejectWithValue(error);
     }
 });
-
 const { reducer } = mediaSlice;
 export { uploadMediaThunk };
 export default reducer;
