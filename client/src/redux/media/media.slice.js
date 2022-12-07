@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import * as mediaService from '../../services/media.service';
+import {plateRecognize} from '../../services/recognize.service'
 
 const initialValues = {
     media: null,
@@ -37,6 +38,11 @@ const uploadMediaThunk = createAsyncThunk('media/upload', async (body, { dispatc
     }
 });
 
+const httpPlateRecognize = async (body) => {
+    const res = await plateRecognize(body);
+    console.log(res)
+    return await res
+};
 const { reducer } = mediaSlice;
-export { uploadMediaThunk };
+export { uploadMediaThunk, httpPlateRecognize };
 export default reducer;

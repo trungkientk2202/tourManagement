@@ -31,6 +31,7 @@ const API_PATHS = {
 
     getUserById: '/user/:id',
 
+    plateRecognize: '/recognize/plate',
     uploadMedia: '/image-video/upload',
     getMedia: '/image-video'
 };

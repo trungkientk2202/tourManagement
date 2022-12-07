@@ -1,14 +1,18 @@
 const mongoose = require('mongoose')
 
 const vehicleSchema = new mongoose.Schema({
-    _id: {
+    id: {
         type: Number,
+        require: true,
+        unique: true,
     },
     licensePlate: {
         type: String,
         require: true,
-        image: String,
     }, 
+    type: {
+        type: String,
+    }
 })
 
 module.exports =  mongoose.model('Vehicle', vehicleSchema)

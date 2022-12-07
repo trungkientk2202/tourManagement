@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { uploadMediaThunk } from '../../redux/media/media.slice';
+import { uploadMediaThunk, httpPlateRecognize } from '../../redux/media/media.slice';
 import Media from './components/media/media.component';
 import selectMedia from '../../redux/media/media.selectors';
 import Stack from '@mui/material/Stack';
@@ -12,6 +12,7 @@ import { MEDIA_TYPE } from '../../constants/common.constant';
 
 const Challan = () => {
     const [media, setMedia] = useState();
+    const [plate, setPlate] = useState();
     const _media = useSelector(selectMedia);
     const dispatch = useDispatch();
 
@@ -43,9 +44,26 @@ const Challan = () => {
         dispatch(uploadMediaThunk(formData));
     };
 
+    const handleRecognize = async () => {
+        const formData = new FormData();
+        formData.append('file', media);
+        const res = await httpPlateRecognize(formData);
+        console.log(res);
+        setPlate(res.data);
+    };
+
     return (
         <div>
             <div>Challan</div>
+            {plate && (
+                <div>
+                    <h4>Vehicle: </h4>
+                    <ul>
+                        <li>Type: {plate.vehicle.type}</li>
+                        <li>License Plate: {plate.plate}</li>
+                    </ul>
+                </div>
+            )}
             <Stack direction="row" alignItems="center" justifyContent="center" spacing={4}>
                 <Box sx={{ position: 'relative' }}>
                     <TextField
@@ -69,6 +87,7 @@ const Challan = () => {
                 </Box>
                 <ButtonGroup variant="outlined" aria-label="outlined button group">
                     <Button onClick={handleUpload}>Detect</Button>
+                    <Button onClick={handleRecognize}>Recognize</Button>
                 </ButtonGroup>
                 <Box>
                     <Media

@@ -13,4 +13,5 @@ const uploadMedia = (body) => {
     );
 };
 
+
 export { uploadMedia };
