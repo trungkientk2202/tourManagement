@@ -8,4 +8,11 @@ const LOCAL_STORAGE = {
     session: 'session'
 };
 
-export { PARAMS, LOCAL_STORAGE };
+const MEDIA_TYPE = {
+    image: 'img',
+    video: 'video',
+    audio: 'audio',
+    '-1': undefined
+};
+
+export { PARAMS, LOCAL_STORAGE, MEDIA_TYPE };
