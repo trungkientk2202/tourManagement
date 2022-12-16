@@ -428,13 +428,13 @@ const edit =  async (req, res, next) => {
         const getUser = await findUser({id: getReqUser.id});
         if(getUser)
         {
-            getUser.password = bcrypt.hashSync(req.body.password.trim(), 10);
+            getUser.password = bcrypt.hashSync(newPassword, 10);
             await getUser.save();
             return makeSuccessResponse(res, 200, {
                 message: 'Password updated'
             })
         }
-        
+
     } catch(error)
     {
         console.log(error);
