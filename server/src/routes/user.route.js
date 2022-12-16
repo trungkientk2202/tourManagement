@@ -28,7 +28,7 @@ router.get('/auth/google/login/success', googleSuccess);
 
 router.get('/auth/google/callback', passport.authenticate('google', {
     successRedirect: CLIENT_URL,
-    failureRedirect: ''
+    failureRedirect: '/auth/google/login/failed'
 }));
 
 module.exports = router;
