@@ -30,7 +30,7 @@ const fidnAndUpdateUser = async(user) => {
 
 const findUser = async(filter) => {
     try {
-        const user = await users.findOne(filter, ('-_id -__v -role -password -status'));
+        const user = await users.findOne(filter);
         if(user instanceof users && user)
             return user;
         return false;
@@ -44,7 +44,7 @@ const saveUser = async(user) => {
         const initUser = new users({
             _id: Number(await getLatestId() + 1),
             email: user.email,
-            googleId: user?.googleId ? googleId : null,
+            googleId: user?.googleId ? user.googleId : null,
             password: user?.password ? bcrypt.hashSync(user.password, 10) : null,
             role: user.role,
             type: user.type,

@@ -6,20 +6,24 @@ const route = require('../routes/index');
 const cookieSession = require('cookie-session');
 const helmet = require('helmet');
 const passport = require('passport');
+const localStrategy = require('passport-local').Strategy;
 const {Strategy} = require('passport-google-oauth2')
-const { AUTH_CONFIG } = require('../utils/Constants')
-const { verifyCallback } = require('../config/security/auth');
+const { AUTH_CONFIG, CLIENT_URL } = require('../utils/Constants')
+const { verifyCallback, verifyUser } = require('../config/security/auth');
 // const session = require('express-session');
 
 const { COOKIE_KEY_1, COOKIE_KEY_2 } = require('../utils/Constants');
 
 passport.use(new Strategy(AUTH_CONFIG, verifyCallback))
+passport.use(new localStrategy({usernameField: 'email'}, verifyUser))
 
 passport.serializeUser((user, done) => {
+    console.log('serialize: ', user);
     done(null, user.id)
 })
 
 passport.deserializeUser((id, done) => {
+    console.log('deserialize: ', id);
     done(null, id)
 })
 const app = express();
@@ -44,7 +48,7 @@ app.use(cookieSession({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: CLIENT_URL,
     methods: "GET,POST,PUT,DELETE",
     credentials: true,
 }));

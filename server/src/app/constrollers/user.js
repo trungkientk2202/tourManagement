@@ -2,6 +2,8 @@ const { findUser, saveUser } = require('../../config/db/models/user.model')
 const { makeSuccessResponse } = require('../../utils/Response');
 const { validateEmail } = require('../../utils/Validate');
 const { LOGIN_TYPE, TOKENS } = require('../../utils/Constants');
+
+const passport = require('passport');
 const userMongo = require('../../config/db/models/user.mongo');
 const tokenMongo = require('../../config/db/models/tokens.mongo')
 const crypto = require('crypto');
@@ -16,7 +18,6 @@ const transporter = nodemailer.createTransport({
             pass: 'pykwzozcafkwbfhz' 
         } 
     });
-
 
 const test = (req, res) => {
     console.log(req.user);
@@ -112,45 +113,23 @@ const register = async(req, res) => {
     }
 }
 
-const login = async (req, res) => {
-    try {
-        if (!req.body.email || !req.body.password)
-            return makeSuccessResponse(res, 400, {
-                message: 'Missing required information'
+const login = (type) => {
+    return (req, res, next) => {
+        passport.authenticate(type, (err, user, message) => {
+            if(err)
+                return makeSuccessResponse(res, 500, {
+                    message: err.message
+                });
+            if(!user)
+                return makeSuccessResponse(res, 400, message);
+            req.logIn(user, err => {
+                if(err)
+                    return makeSuccessResponse(res, 500, {
+                        message: err.message
+                    });
+                return makeSuccessResponse(res, 200, {});
             });
-        const reqEmail = req.body.email.trim();
-        const reqPasword = req.body.password.trim();
-        
-        const getUser = await userMongo.findOne({ email: reqEmail });
-        if (!getUser)
-        {
-            // if email not found in db
-            return makeSuccessResponse(res, 401, {
-                message: 'The email address ' + reqEmail + ' is not associated with any account. please check and try again!'
-            });
-        }
-        else if (!bcrypt.compareSync(reqPasword, getUser.password))
-        {
-            return makeSuccessResponse(res, 401, {
-                message: 'Wrong password'
-            });
-        }
-        else if (!getUser.status)
-        {
-            // if email not verified 
-            return makeSuccessResponse(res, 401, {
-                message: 'Your Email has not been verified. Please click on resend'
-            });
-        }
-        else {
-            
-        }
-
-    }catch(error)
-    {
-        return makeSuccessResponse(res, 500, {
-            message: error.message,
-        });
+        })(req, res, next);
     }
 }
 
@@ -323,51 +302,157 @@ const logoutUser = (req, res) => {
     });
 };
 
-const googleLoginFailed = (req, res) => {
-    return makeSuccessResponse(res, 401, {
-        message: "Login google failed"
-    });
-}
-// fetch('https://localhost:8000/api/user/auth/google/login/success', {method: "GET", headers: {"Content-Type": "application/json" }, credentials: "same-origin" }).then(res => console.log(res))
-// fetch("http://localhost:8000/api/user/auth/google/login/success", {
-//         method: "GET",
-//         credentials: "include",
-//         headers: {
-//           Accept: "application/json",
-//           "Content-Type": "application/json",
-//           "Access-Control-Allow-Credentials": true,
-//         },
-//       })
+const forgotPassword =async (req, res, next) => {
+    try{
+        if(!req.body.email)
+            return makeSuccessResponse(res, 400, {
+                message: "Missing email"
+            })
+        else if (!validateEmail(req.body.email))
+        {
+            return makeSuccessResponse(res, 500, {
+                message: 'Invalid email'
+            });
+        }
+        else {
+            const getUser = await userMongo.findOne({
+                email: req.body.email.trim()
+            });
 
-const googleLoginSuccess = async(req, res) => {
-    console.log(req.user);
-    const user = await findUser({googleId: req.user});
-    if(req.user && user) {
-
-        console.log(user);
-        return makeSuccessResponse(res, 200, {
-            data: user,
-            // cookies: req.cookies
+            if (getUser && getUser instanceof userMongo)
+            {
+                const token = new tokenMongo({
+                    _userId: getUser._id,
+                    token: crypto.randomBytes(16).toString('hex'),
+                    type: TOKENS.PASSWORD_RESET
+                })
+                const newToken = await token.save();
+        
+                if (newToken instanceof tokenMongo && newToken)
+                {
+                    const url = '\nhttp:\/\/' + req.headers.host  + '\/user'+ '\/reset-password\/' + newToken.token;
+                    const mailOptions = { 
+                        from: 'no-reply@example.com', 
+                        to: getUser.email, 
+                        subject: 'Password reset', 
+                        html: `Hello ${getUser.email} <br></br><br></br> Click <a href="${url}">here</a> to reset your password <br></br><br></br> Thank You!`};
+                    
+                    transporter.sendMail(mailOptions, err => {
+                        if (err) { 
+                            return makeSuccessResponse(res, 500, {
+                                message: 'Technical Issue!, Please try again.'
+                            });
+                        }
+                        
+                        return makeSuccessResponse(res, 400, {
+                            message: 'Aa email has been sent to ' + getUser.email + '. It will be expired after 1 minute.'
+                        })
+                    });
+                }
+                else
+                    throw new Error('Something went wrong');
+            }
+            else
+                throw new Error('No account corresponding with that email was found');
+        }
+    } catch(error)
+    {
+        console.log(error);
+        return makeSuccessResponse(res, 500, {
+            message: error.message
         })
     }
-    return makeSuccessResponse(res, 404, {
-        message: "User not found"
-    })
 }
 
-const getUser = async (req, res) => {
+const resetPassword = async (req, res, next) => {
+    try {
+        if (req.body.password !== req.body.confirmpassword)
+            return makeSuccessResponse(res, 400, {
+                message: 'Password not match'
+            })
+        const passwordReset = await tokenMongo.findOne({
+            type: TOKENS.PASSWORD_RESET,
+            token: req.body.token
+        })
+        if (passwordReset instanceof tokenMongo && passwordReset)
+        {
+            const getUser = await findUser({
+                _id: passwordReset._userId
+            })
 
-};
+            if (getUser)
+            {
+                getUser.password = bcrypt.hashSync(req.body.password.trim(), 10);
+                await getUser.save();
+                await tokenMongo.deleteOne({
+                   type: TOKENS.PASSWORD_RESET,
+                   _userId: passwordReset._userId
+                });
+                return makeSuccessResponse(res, 200, {
+                    message: "Reset password successfully, please login with your new password"
+                })
+            }
+            else throw new Error('User not found');
+        }
+        else{
+            return makeSuccessResponse(res, 400, {
+                message: 'Your reset password link may have expired. Please try again.'
+            })
+        }
+    }catch(error)
+    {
+        console.log(error);
+        return makeSuccessResponse(res, 500, {
+            message: error.message
+        });
+    }
+}
+
+const edit =  async (req, res, next) => {
+    try{
+        if(!req.body.password || !req.body.confirmpassword)
+        {
+            return makeSuccessResponse(res, 401, {
+                message: 'Password not match',
+            });
+        }
+
+        const newPassword = req.body.password.trim();
+        const getReqUser = req?.user;
+        if(!getReqUser)
+        {
+            return makeSuccessResponse(res, 400, {
+                message: 'User not found'
+            })
+        }
+        const getUser = await findUser({id: getReqUser.id});
+        if(getUser)
+        {
+            getUser.password = bcrypt.hashSync(req.body.password.trim(), 10);
+            await getUser.save();
+            return makeSuccessResponse(res, 200, {
+                message: 'Password updated'
+            })
+        }
+        
+    } catch(error)
+    {
+        console.log(error);
+        return makeSuccessResponse(res, 500, {
+            message: error.message
+        })
+    }
+}
 
 module.exports = {
     test,
     getCurrentUser,
-    getUser,
     logoutUser,
-    googleLoginFailed,
-    googleLoginSuccess,
     register,
     login,
     verifyAccount,
-    resendLink
+    resendLink,
+    forgotPassword,
+    resetPassword,
+    edit
 }
