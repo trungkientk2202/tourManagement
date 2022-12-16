@@ -95,7 +95,7 @@ const register = async(req, res) => {
                             });
                         }
                         
-                        return makeSuccessResponse(res, 400, {
+                        return makeSuccessResponse(res, 200, {
                             message: 'A verification email has been sent to ' + newUser.email + '. It will be expire after 1 minute. If you not get verification Email click on resend.'
                         })
                     });
@@ -190,7 +190,7 @@ const verifyAccount = async(req, res) => {
             })
         }
 
-    }catch(error){
+    } catch(error){
         console.log(error);
         return makeSuccessResponse(res, 500, {
             message: error.message
@@ -330,7 +330,7 @@ const forgotPassword =async (req, res, next) => {
         
                 if (newToken instanceof tokenMongo && newToken)
                 {
-                    const url = '\nhttp:\/\/' + req.headers.host  + '\/user'+ '\/reset-password\/' + newToken.token;
+                    const url = '\nhttp:\/\/' + 'localhost:3000'  + '\/reset-password\/' + newToken.token;
                     const mailOptions = { 
                         from: 'no-reply@example.com', 
                         to: getUser.email, 
