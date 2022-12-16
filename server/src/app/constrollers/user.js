@@ -85,7 +85,7 @@ const register = async(req, res) => {
                         from: 'no-reply@example.com', 
                         to: newUser.email, 
                         subject: 'Account Verification Link', 
-                        text: 'Hello '+ newUser.email +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api\/' + 'user'+ '\/confirmation\/' + newUser.email + '\/' + newToken.token + '\n\nThank You!\n' };
+                        text: 'Hello '+ newUser.email +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + 'localhost:3000' + '\/verify\/' + '?email=' + newUser.email + '&token=' + newToken.token + '\n\nThank You!\n' };
                     
                     transporter.sendMail(mailOptions, err => {
                         if (err) { 
