@@ -14,6 +14,7 @@ const { verifyCallback } = require('../config/security/auth');
 const { COOKIE_KEY_1, COOKIE_KEY_2 } = require('../utils/Constants');
 
 passport.use(new Strategy(AUTH_CONFIG, verifyCallback))
+
 passport.serializeUser((user, done) => {
     done(null, user.id)
 })
@@ -23,6 +24,7 @@ passport.deserializeUser((id, done) => {
 })
 const app = express();
 app.use(express.static(path.join(__dirname, '..', '..', 'public')));
+app.use(express.urlencoded({ extended: false }));
 
 app.get('/*', (req, res) => {
     res.sendFile(path.join(__dirname, '..','..', 'public'));
@@ -38,11 +40,7 @@ app.use(cookieSession({
     maxAge: 60 * 60 * 24 * 1000,
     keys: [COOKIE_KEY_1, COOKIE_KEY_2]
 }));
-// app.use(session({
-//     secret : "secret",
-//     saveUninitialized: true,
-//     resave: true
-//   }))
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors({

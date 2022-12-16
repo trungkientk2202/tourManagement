@@ -1,23 +1,28 @@
-const { addUser, findUser } = require("../db/models/user.model");
+const { findUser, saveUser } = require("../db/models/user.model");
 const { makeSuccessResponse } = require('../../utils/Response');
 const { ROLES, LOGIN_TYPE } = require('../../utils/Constants');
 
 const verifyCallback = async (accessToken, refreshToken, profile, done) => {
     console.log('Google profile ', profile);
     try{
-        let saveUser = await findUser({email: profile.email});
-        if (!saveUser) {
-            saveUser = await addUser({
+        let getUser = await findUser({email: profile.email});
+        if (!getUser) {
+            const newUser = await saveUser({
                 googleId: profile.id, 
                 email: profile.email,
                 role: ROLES.ADMIN,
                 type: LOGIN_TYPE.GOOGLE
-            });
+            })
+            if(!newUser)
+                throw new Error('Save user failed');
+        }
+        else{
+            throw new Error('Email already existed');
         }
     } catch(error)
     {
         console.log(error.message);
-        done(error, profile);
+        done(null, false, { message: error.message });
     }
     done(null, profile);   
 }

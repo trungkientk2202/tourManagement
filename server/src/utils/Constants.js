@@ -29,10 +29,16 @@ const FILE_TYPE = {
     AUDIO: 'audio'
 }
 
+const TOKENS = {
+    PASSWORD_RESET: 'PASSWORD_RESET', 
+    EMAIL_VERIFY: 'EMAIL_VERIFY'
+}
+
 module.exports = {
     ...CONFIG,
     LOGIN_TYPE,
     ROLES,
     AUTH_CONFIG,
-    FILE_TYPE
+    FILE_TYPE,
+    TOKENS
 }
