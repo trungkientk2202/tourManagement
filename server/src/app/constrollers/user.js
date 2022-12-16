@@ -278,7 +278,7 @@ const getCurrentUser = async (req, res) => {
     const reqUser = req?.user;
     if (reqUser) {
         console.log(reqUser);
-        const getUser = await findUser({id: reqUser});
+        const getUser = await findUser({_id: reqUser});
         if (getUser) {
             return makeSuccessResponse(res, 200, {
                 data: getUser,
@@ -452,7 +452,7 @@ const googleLoginFailed = (req, res, next) => {
 
 const googleSuccess = async (req, res, next) => {
     console.log(req.user);
-    const user = await findUser({googleId: req.user});
+    const user = await findUser({_id: req.user});
     if(req.user && user){
         console.log(user);
         return makeSuccessResponse(res, 200, {
