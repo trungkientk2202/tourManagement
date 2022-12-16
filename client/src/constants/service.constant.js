@@ -21,12 +21,16 @@ const HTTP_STATUS_CODES = {
 };
 
 const API_PATHS = {
-    logIn: '/user/auth/google/login/success',
+    logIn: '/user/login',
+    register: '/user/register',
     logInByGoogle: '/user/auth/google',
-    register: '/auth/sign_up',
+    logInByGoogleSuccess: '/user/auth/google/login/success',
     logout: '/user/auth/logout',
     refreshToken: '/auth/refresh_token',
     changePassword: '/auth/change_password',
+    forgotPassword: '/user/forgot-password',
+    resetPassword: '/user/reset-password',
+    resend: '/user/resend',
     loadProfile: '/user/get-current',
 
     getUserById: '/user/:id',

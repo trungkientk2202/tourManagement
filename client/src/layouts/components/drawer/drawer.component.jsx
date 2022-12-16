@@ -40,7 +40,7 @@ const menuList2 = [
     {
         name: 'Profile',
         icon: <PersonIcon />,
-        link: '/'
+        link: '/profile'
     }
 ];
 

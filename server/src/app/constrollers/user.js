@@ -10,13 +10,13 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
 
-const transporter = nodemailer.createTransport({ 
+const transporter = nodemailer.createTransport({
     service: 'Gmail',
-    auth: 
-        { 
-            user: 'olivertuan1310@gmail.com', 
-            pass: 'pykwzozcafkwbfhz' 
-        } 
+    auth:
+        {
+            user: 'olivertuan1310@gmail.com',
+            pass: 'pykwzozcafkwbfhz'
+        }
     });
 
 const test = (req, res) => {
@@ -33,7 +33,7 @@ const register = async(req, res) => {
         const reqEmail = req.body.email.trim();
         const reqPassword = req.body.password.trim();
         const reqPasswordConfirm = req.body.confirmpassword.trim();
-        
+
         if(reqPassword.length < 3)
             return makeSuccessResponse(res, 400, {
                 message: 'Password length must be greater than 3'
@@ -43,13 +43,13 @@ const register = async(req, res) => {
             return makeSuccessResponse(res, 400, {
                 message: 'Password not match'
             });
-            
+
 
         if(!validateEmail(reqEmail))
             return makeSuccessResponse(res, 500, {
                 message: 'Invalid email'
             });
-        
+
         const getUser = await findUser({
             email: reqEmail
         })
@@ -77,30 +77,30 @@ const register = async(req, res) => {
                     type: TOKENS.EMAIL_VERIFY
                 });
                 const newToken = await token.save();
-                
+
                 if(newToken instanceof tokenMongo && newToken)
                 {
                     // send mail
-                    const mailOptions = { 
-                        from: 'no-reply@example.com', 
-                        to: newUser.email, 
-                        subject: 'Account Verification Link', 
+                    const mailOptions = {
+                        from: 'no-reply@example.com',
+                        to: newUser.email,
+                        subject: 'Account Verification Link',
                         text: 'Hello '+ newUser.email +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api\/' + 'user'+ '\/confirmation\/' + newUser.email + '\/' + newToken.token + '\n\nThank You!\n' };
-                    
+
                     transporter.sendMail(mailOptions, err => {
-                        if (err) { 
+                        if (err) {
                             console.log(err);
                             return makeSuccessResponse(res, 500, {
                                 message: 'Technical Issue!, Please click on resend for verify your Email.'
                             });
                         }
-                        
+
                         return makeSuccessResponse(res, 400, {
                             message: 'A verification email has been sent to ' + newUser.email + '. It will be expire after 1 minute. If you not get verification Email click on resend.'
                         })
                     });
                 }
-                else throw new Error('Something went wrong'); 
+                else throw new Error('Something went wrong');
             }
             else throw new Error('Something went wrong');
         }
@@ -147,12 +147,12 @@ const verifyAccount = async(req, res) => {
             token: req.params.token,
             type: TOKENS.EMAIL_VERIFY
         });
-        
+
         if(getToken)
         {
-            const getUser = await userMongo.findOne({ 
-                _id: getToken._userId, 
-                email: req.params.email 
+            const getUser = await userMongo.findOne({
+                _id: getToken._userId,
+                email: req.params.email
             });
             if (getUser instanceof userMongo && getUser)
             {
@@ -212,7 +212,7 @@ const resendLink = async(req, res) => {
             return makeSuccessResponse(res, 500, {
                 message: 'Invalid email'
             });
-            
+
         if (getUser instanceof userMongo && getUser)
         {
             if (getUser.status)
@@ -221,36 +221,36 @@ const resendLink = async(req, res) => {
                 })
             else {
                 // delete the old ones
-                await tokenMongo.deleteMany({ 
+                await tokenMongo.deleteMany({
                     _userId: getUser._id,
                     type: TOKENS.EMAIL_VERIFY
                  });
-                
+
                 // generate token and save
-                const token = new tokenMongo({ 
-                    _userId: getUser._id, 
+                const token = new tokenMongo({
+                    _userId: getUser._id,
                     token: crypto.randomBytes(16).toString('hex'),
                     type: TOKENS.EMAIL_VERIFY
                 });
 
                 const newToken = await token.save();
-    
+
                 // send mail
                 if (newToken instanceof tokenMongo && newToken)
                 {
-                    const mailOptions = { 
-                        from: 'no-reply@example.com', 
-                        to: getUser.email, 
-                        subject: 'Account Verification Link', 
+                    const mailOptions = {
+                        from: 'no-reply@example.com',
+                        to: getUser.email,
+                        subject: 'Account Verification Link',
                         text: 'Hello '+ getUser.userName +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api\/' + 'user'+ '\/confirmation\/' + getUser.email + '\/' + newToken.token + '\n\nThank You!\n' };
-                    
+
                     transporter.sendMail(mailOptions, err => {
-                        if (err) { 
+                        if (err) {
                             return makeSuccessResponse(res, 500, {
                                 message: 'Technical Issue!, Please click on resend for verify your Email.'
                             });
                         }
-                        
+
                         return makeSuccessResponse(res, 400, {
                             message: 'A verification email has been sent to ' + getUser.email + '. It will be expire after 1 minutes. If you not get verification Email click on resend token.'
                         })
@@ -327,23 +327,23 @@ const forgotPassword =async (req, res, next) => {
                     type: TOKENS.PASSWORD_RESET
                 })
                 const newToken = await token.save();
-        
+
                 if (newToken instanceof tokenMongo && newToken)
                 {
                     const url = '\nhttp:\/\/' + req.headers.host  + '\/user'+ '\/reset-password\/' + newToken.token;
-                    const mailOptions = { 
-                        from: 'no-reply@example.com', 
-                        to: getUser.email, 
-                        subject: 'Password reset', 
+                    const mailOptions = {
+                        from: 'no-reply@example.com',
+                        to: getUser.email,
+                        subject: 'Password reset',
                         html: `Hello ${getUser.email} <br></br><br></br> Click <a href="${url}">here</a> to reset your password <br></br><br></br> Thank You!`};
-                    
+
                     transporter.sendMail(mailOptions, err => {
-                        if (err) { 
+                        if (err) {
                             return makeSuccessResponse(res, 500, {
                                 message: 'Technical Issue!, Please try again.'
                             });
                         }
-                        
+
                         return makeSuccessResponse(res, 400, {
                             message: 'Aa email has been sent to ' + getUser.email + '. It will be expired after 1 minute.'
                         })

@@ -85,7 +85,7 @@ const Challan = () => {
                     />
                     <Media media={media} fallback={require('../../assets/images/add_image.png')} />
                 </Box>
-                <ButtonGroup variant="outlined" aria-label="outlined button group">
+                <ButtonGroup orientation="vertical" variant="contained" aria-label="outlined button group">
                     <Button onClick={handleUpload}>Detect</Button>
                     <Button onClick={handleRecognize}>Recognize</Button>
                 </ButtonGroup>
