@@ -30,7 +30,9 @@ const API_PATHS = {
     changePassword: '/auth/change_password',
     forgotPassword: '/user/forgot-password',
     resetPassword: '/user/reset-password',
+    editPassword: '/user/edit',
     resend: '/user/resend',
+    verify: '/user/confirmation',
     loadProfile: '/user/get-current',
 
     getUserById: '/user/:id',

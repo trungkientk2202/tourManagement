@@ -85,7 +85,7 @@ const register = async(req, res) => {
                         from: 'no-reply@example.com',
                         to: newUser.email,
                         subject: 'Account Verification Link',
-                        text: 'Hello '+ newUser.email +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api\/' + 'user'+ '\/confirmation\/' + newUser.email + '\/' + newToken.token + '\n\nThank You!\n' };
+                        text: 'Hello '+ newUser.email +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + 'localhost:3000' + '\/verify' + '?email=' + newUser.email + '&token=' + newToken.token + '\n\nThank You!\n' };
 
                     transporter.sendMail(mailOptions, err => {
                         if (err) {
@@ -251,7 +251,7 @@ const resendLink = async(req, res) => {
                             });
                         }
 
-                        return makeSuccessResponse(res, 400, {
+                        return makeSuccessResponse(res, 200, {
                             message: 'A verification email has been sent to ' + getUser.email + '. It will be expire after 1 minutes. If you not get verification Email click on resend token.'
                         })
                     });
@@ -344,7 +344,7 @@ const forgotPassword =async (req, res, next) => {
                             });
                         }
 
-                        return makeSuccessResponse(res, 400, {
+                        return makeSuccessResponse(res, 200, {
                             message: 'Aa email has been sent to ' + getUser.email + '. It will be expired after 1 minute.'
                         })
                     });

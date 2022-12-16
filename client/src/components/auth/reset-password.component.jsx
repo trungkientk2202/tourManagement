@@ -1,14 +1,46 @@
-import React from 'react';
-import { Box, Grid, Button, Stack, InputLabel, OutlinedInput, FormHelperText } from '@mui/material';
+import React, { useState } from 'react';
+import {
+    Box,
+    Grid,
+    Button,
+    Stack,
+    InputLabel,
+    OutlinedInput,
+    FormHelperText,
+    Typography,
+    ButtonBase
+} from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { Link, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { resetPasswordThunk } from '../../redux/auth/auth.slice';
+import selectAuth from '../../redux/auth/auth.selectors';
 
 const ResetPassword = () => {
-    const token = useParams();
+    const { token } = useParams();
+    const { error } = useSelector(selectAuth);
+    const [isSubmitted, setSubmitted] = useState(false);
     const dispatch = useDispatch();
+
+    if (!token) return <></>;
+
+    if (isSubmitted && !error) {
+        return (
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+                <Stack>
+                    <Typography sx={{ fontWeight: 500, fontSize: '1.5rem', display: 'flex', alignItems: 'center' }}>
+                        <CheckCircleIcon sx={{ mr: 2 }} /> Your password has changed.
+                    </Typography>
+                    <Typography component="p">Please, log In with your new password.</Typography>
+                    <ButtonBase component={Link} to="/">
+                        Back to Home
+                    </ButtonBase>
+                </Stack>
+            </Box>
+        );
+    }
 
     return (
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
@@ -33,6 +65,7 @@ const ResetPassword = () => {
                                     confirmpassword: values.confirmPassword
                                 })
                             );
+                            setSubmitted(true);
                             setStatus({ success: false });
                             setSubmitting(false);
                         } catch (err) {

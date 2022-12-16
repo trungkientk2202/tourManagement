@@ -86,6 +86,36 @@ const authSlice = createSlice({
                 state.error = action.payload;
                 state.loading = false;
             })
+            .addCase(editPasswordThunk.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(editPasswordThunk.fulfilled, (state) => {
+                state.loading = false;
+            })
+            .addCase(editPasswordThunk.rejected, (state, action) => {
+                state.error = action.payload;
+                state.loading = false;
+            })
+            .addCase(verifyThunk.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(verifyThunk.fulfilled, (state) => {
+                state.loading = false;
+            })
+            .addCase(verifyThunk.rejected, (state, action) => {
+                state.error = action.payload;
+                state.loading = false;
+            })
+            .addCase(resendThunk.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(resendThunk.fulfilled, (state) => {
+                state.loading = false;
+            })
+            .addCase(resendThunk.rejected, (state, action) => {
+                state.error = action.payload;
+                state.loading = false;
+            })
             .addCase(resetPasswordThunk.pending, (state) => {
                 state.loading = true;
             })
@@ -172,6 +202,14 @@ const resetPasswordThunk = createAsyncThunk('auth/resetPassword', async (body, {
         return rejectWithValue(error);
     }
 });
+const editPasswordThunk = createAsyncThunk('auth/editPassword', async (body, { rejectWithValue }) => {
+    try {
+        await authService.editPassword(body);
+        return;
+    } catch (error) {
+        return rejectWithValue(error);
+    }
+});
 
 const resendThunk = createAsyncThunk('auth/resend', async (body, { rejectWithValue }) => {
     try {
@@ -182,7 +220,27 @@ const resendThunk = createAsyncThunk('auth/resend', async (body, { rejectWithVal
     }
 });
 
+const verifyThunk = createAsyncThunk('auth/verify', async (body, { rejectWithValue }) => {
+    try {
+        await authService.verify(body);
+        return;
+    } catch (error) {
+        return rejectWithValue(error);
+    }
+});
+
 const { reducer, actions } = authSlice;
 export const { setUser, removeUser } = actions;
-export { getMeThunk, logInThunk, logInGoogleThunk, logoutThunk, registerThunk, forgotPasswordThunk, resendThunk,resetPasswordThunk };
+export {
+    getMeThunk,
+    logInThunk,
+    logInGoogleThunk,
+    logoutThunk,
+    registerThunk,
+    forgotPasswordThunk,
+    editPasswordThunk,
+    resendThunk,
+    resetPasswordThunk,
+    verifyThunk
+};
 export default reducer;

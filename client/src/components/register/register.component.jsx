@@ -5,18 +5,21 @@ import { Link } from 'react-router-dom';
 // material-ui
 import { Grid, Stack, Typography, Box, ButtonBase } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import WestIcon from '@mui/icons-material/West';
 
 // project import
 import Card from '../shared/card/card.component';
 import AuthRegister from './register-form/register-form.component';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { resendThunk } from '../../redux/auth/auth.slice';
+import selectAuth from '../../redux/auth/auth.selectors';
 
 const Register = () => {
     const dispatch = useDispatch();
+    const { error } = useSelector(selectAuth);
     const [resend, setResend] = useState({});
 
-    if (resend?.isSubmitted) {
+    if (resend?.isSubmitted && !error) {
         return (
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
                 <Stack>
@@ -33,6 +36,10 @@ const Register = () => {
                             resend
                         </ButtonBase>
                     </Typography>
+                    <ButtonBase sx={{ justifyContent: 'flex-start', p: 2, px: 5 }} component={Link} to="/login">
+                        <WestIcon sx={{ mr: 2 }} />
+                        LogIn
+                    </ButtonBase>
                 </Stack>
             </Box>
         );

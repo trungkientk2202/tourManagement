@@ -10,6 +10,7 @@ const AuthLogin = loadable(React.lazy(() => import('../components/login/login.co
 const AuthRegister = loadable(React.lazy(() => import('../components/register/register.component')));
 const ForgotPassword = loadable(React.lazy(() => import('../components/auth/forgot-password.component')));
 const ResetPassword = loadable(React.lazy(() => import('../components/auth/reset-password.component')));
+const VerifyEmail = loadable(React.lazy(() => import('../components/auth/verify-email.component')));
 
 const AuthRoutes = {
     path: URL_PATHS.HOME,
@@ -30,6 +31,10 @@ const AuthRoutes = {
         {
             path: `${URL_PATHS.RESET_PASSWORD}/:token`,
             element: <ResetPassword />
+        },
+        {
+            path: `${URL_PATHS.VERIFY_EMAIL}`,
+            element: <VerifyEmail />
         }
     ]
 };

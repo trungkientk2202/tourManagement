@@ -4,12 +4,14 @@ import WestIcon from '@mui/icons-material/West';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Typography, Box, Paper, InputLabel, Stack, OutlinedInput, Button, ButtonBase } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { forgotPasswordThunk } from '../../redux/auth/auth.slice';
+import selectAuth from '../../redux/auth/auth.selectors';
 
 const ForgotPassword = () => {
     const dispatch = useDispatch();
     const [email, setEmail] = useState('');
+    const { error } = useSelector(selectAuth);
     const [isSubmitted, setSubmitted] = useState(false);
 
     const handleForgotPassword = () => {
@@ -17,7 +19,7 @@ const ForgotPassword = () => {
         setSubmitted(true);
     };
 
-    if (isSubmitted) {
+    if (isSubmitted && !error) {
         return (
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
                 <Stack>

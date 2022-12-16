@@ -13,8 +13,11 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import { useDispatch } from 'react-redux';
+import { editPasswordThunk } from '../../../../redux/auth/auth.slice';
 
 const ChangePasswordForm = () => {
+    const dispatch = useDispatch();
     const [showPassword, setShowPassword] = React.useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
     const handleClickShowPassword = () => {
@@ -32,8 +35,8 @@ const ChangePasswordForm = () => {
         <>
             <Formik
                 initialValues={{
-                    password: '123456',
-                    confirmPassword: '123456'
+                    password: '',
+                    confirmPassword: ''
                 }}
                 validationSchema={Yup.object().shape({
                     password: Yup.string().max(255).min(3).required('Password is required'),
@@ -43,6 +46,9 @@ const ChangePasswordForm = () => {
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
+                        dispatch(
+                            editPasswordThunk({ password: values.password, confirmpassword: values.confirmPassword })
+                        );
                         setStatus({ success: false });
                         setSubmitting(false);
                     } catch (err) {
@@ -84,7 +90,7 @@ const ChangePasswordForm = () => {
                                                 </IconButton>
                                             </InputAdornment>
                                         }
-                                        placeholder="Enter password"
+                                        placeholder="*****"
                                     />
                                     {touched.password && errors.password && (
                                         <FormHelperText error id="standard-weight-helper-text-password-login">
@@ -124,7 +130,7 @@ const ChangePasswordForm = () => {
                                                 </IconButton>
                                             </InputAdornment>
                                         }
-                                        placeholder="Enter password"
+                                        placeholder="*****"
                                     />
                                     {touched.confirmPassword && errors.confirmPassword && (
                                         <FormHelperText error id="standard-weight-helper-text-confirmPassword-login">
