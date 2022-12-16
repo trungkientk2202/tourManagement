@@ -11,6 +11,7 @@ router.post('/register', register);
 router.get('/confirmation/:email/:token', verifyAccount);
 router.post('/resend', resendLink);
 router.post('/login', login('local'));
+
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
 router.post('/edit', checkLoggedIn, edit);

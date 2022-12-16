@@ -20,7 +20,7 @@ const transporter = nodemailer.createTransport({
     });
 
 const test = (req, res) => {
-    console.log(req.user);
+    console.log('###req.user: ',req.user);
     res.send('hello world');
 };
 
@@ -315,11 +315,11 @@ const forgotPassword =async (req, res, next) => {
             });
         }
         else {
-            const getUser = await userMongo.findOne({
+            const getUser = await findUser({
                 email: req.body.email.trim()
-            });
+            })
 
-            if (getUser && getUser instanceof userMongo)
+            if (getUser)
             {
                 const token = new tokenMongo({
                     _userId: getUser._id,
@@ -418,14 +418,14 @@ const edit =  async (req, res, next) => {
         }
 
         const newPassword = req.body.password.trim();
-        const getReqUser = req?.user;
-        if(!getReqUser)
+        const userId = req?.user;
+        if(!userId)
         {
             return makeSuccessResponse(res, 400, {
                 message: 'User not found'
             })
         }
-        const getUser = await findUser({id: getReqUser.id});
+        const getUser = await findUser({id: userId});
         if(getUser)
         {
             getUser.password = bcrypt.hashSync(newPassword, 10);
