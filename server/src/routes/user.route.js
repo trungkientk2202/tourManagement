@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { CLIENT_URL } = require('../utils/Constants')
+const { CLIENT_URL, LOGIN_TYPE } = require('../utils/Constants')
 
 const { test, getCurrentUser, logoutUser, register, login, verifyAccount, resendLink, forgotPassword, resetPassword, edit, googleLoginFailed, googleSuccess } = require('../app/constrollers/user');
 const { checkLoggedIn } = require('../config/security/auth');
@@ -27,7 +27,7 @@ router.get('/auth/google/login/failed', googleLoginFailed);
 router.get('/auth/google/login/success', googleSuccess);
 
 router.get('/auth/google/callback', passport.authenticate('google', {
-    successRedirect: CLIENT_URL,
+    successRedirect: CLIENT_URL + '/login?type='+ LOGIN_TYPE.GOOGLE,
     failureRedirect: '/auth/google/login/failed'
 }));
 
