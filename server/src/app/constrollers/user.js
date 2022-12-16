@@ -444,6 +444,26 @@ const edit =  async (req, res, next) => {
     }
 }
 
+const googleLoginFailed = (req, res, next) => {
+    return makeSuccessResponse(res, 401, {
+        message: "Login google failed"
+    })
+}
+
+const googleSuccess = async (req, res, next) => {
+    console.log(req.user);
+    const user = await findUser({googleId: req.user});
+    if(req.user && user){
+        console.log(user);
+        return makeSuccessResponse(res, 200, {
+            data: user
+        });
+    }
+    return makeSuccessResponse(res, 404, {
+        message: 'User not found'
+    })
+}
+
 module.exports = {
     test,
     getCurrentUser,
@@ -454,5 +474,7 @@ module.exports = {
     resendLink,
     forgotPassword,
     resetPassword,
-    edit
+    edit,
+    googleLoginFailed,
+    googleSuccess
 }
