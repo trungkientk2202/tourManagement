@@ -7,7 +7,8 @@ import {
     InputLabel,
     OutlinedInput,
     InputAdornment,
-    FormHelperText
+    FormHelperText,
+    Divider
 } from '@mui/material';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -141,24 +142,24 @@ const ChangePasswordForm = () => {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Stack direction={'row'} justifyContent={'flex-end'} sx={{ mt: 5 }} spacing={2}>
-                                    <Button
-                                        disabled={isSubmitting}
-                                        size="large"
-                                        type="reset"
-                                        variant="outlined"
-                                        color="primary">
-                                        Reset
-                                    </Button>
-                                    <Button
-                                        disabled={isSubmitting}
-                                        size="large"
-                                        type="submit"
-                                        variant="contained"
-                                        color="primary">
-                                        Save
-                                    </Button>
-                                </Stack>
+                                <Divider textAlign='right'>
+                                    <Stack direction={'row'} justifyContent={'flex-end'} sx={{ mt: 5 }} spacing={2}>
+                                        <Button
+                                            disabled={isSubmitting}
+                                            type="reset"
+                                            variant="outlined"
+                                            color="primary">
+                                            Reset
+                                        </Button>
+                                        <Button
+                                            disabled={isSubmitting}
+                                            type="submit"
+                                            variant="contained"
+                                            color="primary">
+                                            Save
+                                        </Button>
+                                    </Stack>
+                                </Divider>
                             </Grid>
                         </Grid>
                     </form>

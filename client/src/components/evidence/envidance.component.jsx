@@ -14,68 +14,51 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import { alpha, useTheme } from '@mui/material/styles';
-import { DataGrid, GridActionsCellItem, GridRowModes, GridToolbarContainer } from '@mui/x-data-grid';
-import { randomCreatedDate, randomTraderName, randomUpdatedDate, randomId } from '@mui/x-data-grid-generator';
-import { Button } from '@mui/material';
+import { DataGrid, GridActionsCellItem, GridRowModes, GridToolbar } from '@mui/x-data-grid';
+import { randomCreatedDate, randomTraderName, randomId } from '@mui/x-data-grid-generator';
 
 const initialRows = [
     {
         id: randomId(),
-        name: randomTraderName(),
-        age: 25,
-        dateCreated: randomCreatedDate(),
-        lastLogin: randomUpdatedDate()
+        eventType: 'Red Light Violation Detection',
+        time: randomCreatedDate(),
+        vehicleNumber: 'XY00ZZ1122',
+        vehicleType: 'Wave RSX',
+        fine: '900,000'
     },
     {
         id: randomId(),
-        name: randomTraderName(),
-        age: 36,
-        dateCreated: randomCreatedDate(),
-        lastLogin: randomUpdatedDate()
+        eventType: 'Red Light Violation Detection',
+        time: randomCreatedDate(),
+        vehicleNumber: 'AB00CC1122',
+        vehicleType: 'AB',
+        fine: '200,000'
     },
     {
         id: randomId(),
-        name: randomTraderName(),
-        age: 19,
-        dateCreated: randomCreatedDate(),
-        lastLogin: randomUpdatedDate()
+        eventType: 'Red Light Violation Detection',
+        time: randomCreatedDate(),
+        vehicleNumber: 'AA12BB2233',
+        vehicleType: 'Car',
+        fine: '2,000,000'
     },
     {
         id: randomId(),
-        name: randomTraderName(),
-        age: 28,
-        dateCreated: randomCreatedDate(),
-        lastLogin: randomUpdatedDate()
+        eventType: 'Red Light Violation Detection',
+        time: randomCreatedDate(),
+        vehicleNumber: 'BC11BB2233',
+        vehicleType: 'SH',
+        fine: '750,000'
     },
     {
         id: randomId(),
-        name: randomTraderName(),
-        age: 23,
-        dateCreated: randomCreatedDate(),
-        lastLogin: randomUpdatedDate()
+        eventType: 'Red Light Violation Detection',
+        time: randomCreatedDate(),
+        vehicleNumber: 'AA11BB2234',
+        vehicleType: 'Wave alpha',
+        fine: '500,000'
     }
 ];
-
-function EditToolbar(props) {
-    const { setRows, setRowModesModel } = props;
-
-    const handleClick = () => {
-        const id = randomId();
-        setRows((oldRows) => [...oldRows, { id, name: '', age: '', isNew: true }]);
-        setRowModesModel((oldModel) => ({
-            ...oldModel,
-            [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' }
-        }));
-    };
-
-    return (
-        <GridToolbarContainer>
-            <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-                Add record
-            </Button>
-        </GridToolbarContainer>
-    );
-}
 
 const Evidence = () => {
     const theme = useTheme();
@@ -121,22 +104,17 @@ const Evidence = () => {
     };
 
     const columns = [
-        { field: 'name', headerName: 'Name', width: 180, editable: true },
-        { field: 'age', headerName: 'Age', type: 'number', editable: true },
+        { field: 'eventType', headerName: 'Event Type', width: 180, editable: true },
         {
-            field: 'dateCreated',
-            headerName: 'Date Created',
-            type: 'date',
-            width: 180,
-            editable: true
-        },
-        {
-            field: 'lastLogin',
-            headerName: 'Last Login',
+            field: 'time',
+            headerName: 'Time',
             type: 'dateTime',
             width: 220,
             editable: true
         },
+        { field: 'vehicleNumber', headerName: 'Vehicle Number', width: 250, editable: true },
+        { field: 'vehicleType', headerName: 'Vehicle Type', width: 220, editable: true },
+        { field: 'fine', headerName: 'Fine (VND)', width: 180, editable: true },
         {
             field: 'actions',
             type: 'actions',
@@ -194,7 +172,7 @@ const Evidence = () => {
                 <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
                     <Stack direction={'row'} alignItems={'center'}>
                         <SearchIcon sx={{ fontSize: '1.5rem', mr: 2 }} />
-                        <Typography sx={{ fontSize: '0.975rem' }}>Search</Typography>
+                        <Typography sx={{ fontSize: '0.875rem' }}>Search</Typography>
                     </Stack>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -239,13 +217,13 @@ const Evidence = () => {
                         onRowEditStop={handleRowEditStop}
                         processRowUpdate={processRowUpdate}
                         components={{
-                            Toolbar: EditToolbar
+                            Toolbar: GridToolbar
                         }}
                         componentsProps={{
                             toolbar: { setRows, setRowModesModel }
                         }}
                         pageSize={5}
-                        rowsPerPageOptions={[5, 10, 25]}
+                        rowsPerPageOptions={[5, 10, 50]}
                         checkboxSelection
                         disableSelectionOnClick
                         experimentalFeatures={{ newEditingApi: true }}
