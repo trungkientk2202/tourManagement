@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { uploadMediaThunk } from '../../redux/media/media.slice';
 import Media from './components/media/media.component';
-import selectMedia from '../../redux/media/media.selectors';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -25,10 +24,9 @@ import { Formik } from 'formik';
 
 const Challan = () => {
     const [media, setMedia] = useState();
-    const [plate, setPlate] = useState();
-    const _media = useSelector(selectMedia);
     const [challan, setChallan] = useState({ type: 1, accept: 'image/*' });
     const dispatch = useDispatch();
+    const {loading} = useSelector(state => state.media);
 
     const handleChangeFile = (e) => {
         e.preventDefault();
@@ -36,6 +34,7 @@ const Challan = () => {
 
         reader.onload = () => {
             setMedia({
+                origin: e.target.files[0],
                 name: e.target.files[0].name,
                 file: reader.result,
                 type: MEDIA_TYPE[`${Object.keys(MEDIA_TYPE).find((k) => e.target.files[0].type.includes(k))}`]
@@ -54,7 +53,7 @@ const Challan = () => {
 
     const handleDetect = () => {
         const formData = new FormData();
-        formData.append('file', media);
+        formData.append('file', media?.origin);
         dispatch(uploadMediaThunk(formData));
     };
 
@@ -70,15 +69,6 @@ const Challan = () => {
                 }}>
                 Challan
             </Typography>
-            {plate && (
-                <div>
-                    <h4>Vehicle: </h4>
-                    <ul>
-                        <li>Type: {plate.vehicle.type}</li>
-                        <li>License Plate: {plate.plate}</li>
-                    </ul>
-                </div>
-            )}
             <Stack direction="row" spacing={5}>
                 <Stack sx={{ flexGrow: 1 }} spacing={2}>
                     <Paper sx={{ p: 5 }}>
@@ -113,7 +103,7 @@ const Challan = () => {
                             <Grid item xs={12}>
                                 <Box>
                                     <Divider textAlign="right">
-                                        <Button variant="contained" endIcon={<East />} onClick={() => handleDetect()}>
+                                        <Button loading={loading} variant="contained" endIcon={<East />} onClick={() => handleDetect()}>
                                             Detect
                                         </Button>
                                     </Divider>

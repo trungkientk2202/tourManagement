@@ -36,14 +36,26 @@ const mediaSlice = createSlice({
             .addCase(getViolationThunk.rejected, (state, action) => {
                 state.error = action.payload;
                 state.loading = false;
+            })
+            .addCase(detectThunk.pending, (state, _) => {
+                state.loading = true;
+            })
+            .addCase(detectThunk.fulfilled, (state, action) => {
+                state.vehicle = action.payload;
+                state.loading = false;
+            })
+            .addCase(detectThunk.rejected, (state, action) => {
+                state.error = action.payload;
+                state.loading = false;
             });
     }
 });
 
 const uploadMediaThunk = createAsyncThunk('media/upload', async (body, { dispatch, rejectWithValue }) => {
     try {
-        const res = await mediaService.detect(body);
-        console.log(res.data);
+        const res = await mediaService.uploadMedia(body);
+        const { file } = res.data?.data;
+        dispatch(detectThunk({ file }));
         return res.data?.data;
     } catch (error) {
         return rejectWithValue(error);
@@ -52,8 +64,8 @@ const uploadMediaThunk = createAsyncThunk('media/upload', async (body, { dispatc
 
 const detectThunk = createAsyncThunk('media/detect', async (body, { dispatch, rejectWithValue }) => {
     try {
-        const res = await mediaService.uploadMedia(body);
-        return res.data?.data;
+        const res = await mediaService.detect(body);
+        return res.data;
     } catch (error) {
         return rejectWithValue(error);
     }
