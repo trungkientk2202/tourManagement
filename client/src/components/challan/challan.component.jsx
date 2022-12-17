@@ -26,7 +26,7 @@ const Challan = () => {
     const [media, setMedia] = useState();
     const [challan, setChallan] = useState({ type: 1, accept: 'image/*' });
     const dispatch = useDispatch();
-    const {loading} = useSelector(state => state.media);
+    const { loading, vehicle } = useSelector((state) => state.media);
 
     const handleChangeFile = (e) => {
         e.preventDefault();
@@ -103,7 +103,11 @@ const Challan = () => {
                             <Grid item xs={12}>
                                 <Box>
                                     <Divider textAlign="right">
-                                        <Button loading={loading} variant="contained" endIcon={<East />} onClick={() => handleDetect()}>
+                                        <Button
+                                            loading={loading}
+                                            variant="contained"
+                                            endIcon={<East />}
+                                            onClick={() => handleDetect()}>
                                             Detect
                                         </Button>
                                     </Divider>
@@ -150,11 +154,10 @@ const Challan = () => {
                         <>
                             <Formik
                                 initialValues={{
-                                    eventType: '',
-                                    time: '',
-                                    vehicleNumber: '',
-                                    vehicleType: '',
-                                    fine: ''
+                                    eventType: vehicle?.violation ?? '',
+                                    time: vehicle && new Date().toLocaleString(),
+                                    vehicleNumber: vehicle?.vehicle?.licensePlate ?? '',
+                                    vehicleType: vehicle?.vehicle?.type ?? ''
                                 }}
                                 validationSchema={Yup.object().shape({
                                     eventType: Yup.string().required('Event Type is required'),
@@ -256,25 +259,6 @@ const Challan = () => {
                                             {touched.vehicleType && errors.vehicleType && (
                                                 <FormHelperText error id="standard-weight-helper-text-vehicle-type">
                                                     {errors.vehicleType}
-                                                </FormHelperText>
-                                            )}
-                                        </Stack>
-                                        <Stack spacing={1} sx={{ mb: 2 }}>
-                                            <InputLabel htmlFor="fine">Fine</InputLabel>
-                                            <OutlinedInput
-                                                id="fine"
-                                                type="text"
-                                                value={values.fine}
-                                                name="vehicleType"
-                                                onBlur={handleBlur}
-                                                onChange={handleChange}
-                                                placeholder="Enter the Fine"
-                                                fullWidth
-                                                error={Boolean(touched.fine && errors.fine)}
-                                            />
-                                            {touched.fine && errors.fine && (
-                                                <FormHelperText error id="standard-weight-helper-text-fine">
-                                                    {errors.fine}
                                                 </FormHelperText>
                                             )}
                                         </Stack>

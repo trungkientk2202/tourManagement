@@ -138,16 +138,6 @@ const Dashboard = () => {
                                 <VerticalBarChart />
                             </Item>
                         </Box>
-                        <Box gridColumn="span 2">
-                            <Item>
-                                <PieChart />
-                            </Item>
-                        </Box>
-                        <Box gridColumn="span 2">
-                            <Item>
-                                <PieChart />
-                            </Item>
-                        </Box>
                     </Box>
                 </Box>
             </Paper>
