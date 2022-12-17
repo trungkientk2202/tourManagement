@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -8,62 +8,38 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import SearchIcon from '@mui/icons-material/Search';
-import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import { alpha, useTheme } from '@mui/material/styles';
 import { DataGrid, GridActionsCellItem, GridRowModes, GridToolbar } from '@mui/x-data-grid';
-import { randomCreatedDate, randomTraderName, randomId } from '@mui/x-data-grid-generator';
-
-const initialRows = [
-    {
-        id: randomId(),
-        eventType: 'Red Light Violation Detection',
-        time: randomCreatedDate(),
-        vehicleNumber: 'XY00ZZ1122',
-        vehicleType: 'Wave RSX',
-        fine: '900,000'
-    },
-    {
-        id: randomId(),
-        eventType: 'Red Light Violation Detection',
-        time: randomCreatedDate(),
-        vehicleNumber: 'AB00CC1122',
-        vehicleType: 'AB',
-        fine: '200,000'
-    },
-    {
-        id: randomId(),
-        eventType: 'Red Light Violation Detection',
-        time: randomCreatedDate(),
-        vehicleNumber: 'AA12BB2233',
-        vehicleType: 'Car',
-        fine: '2,000,000'
-    },
-    {
-        id: randomId(),
-        eventType: 'Red Light Violation Detection',
-        time: randomCreatedDate(),
-        vehicleNumber: 'BC11BB2233',
-        vehicleType: 'SH',
-        fine: '750,000'
-    },
-    {
-        id: randomId(),
-        eventType: 'Red Light Violation Detection',
-        time: randomCreatedDate(),
-        vehicleNumber: 'AA11BB2234',
-        vehicleType: 'Wave alpha',
-        fine: '500,000'
-    }
-];
+import { useDispatch, useSelector } from 'react-redux';
+import { getViolationThunk } from '../../redux/media/media.slice';
 
 const Evidence = () => {
+    const dispatch = useDispatch();
+    const violations = useSelector(state => state.media.violations);
     const theme = useTheme();
-    const [rows, setRows] = React.useState(initialRows);
+    const [rows, setRows] = React.useState([]);
     const [rowModesModel, setRowModesModel] = React.useState({});
+
+    useEffect(() => {
+        dispatch(getViolationThunk());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    useEffect(() => {
+        const temp = violations.map((_v, index) => ({
+            id: _v?.vehicle?.id ?? index,
+            eventType: _v?.fault?.name ?? '',
+            time: _v?.time ?? new Date().toLocaleString(),
+            vehicleNumber: _v?.vehicle?.licensePlate??'',
+            vehicleType: _v?.vehicle?.type??'',
+            fine: _v?.fault?.chargeMoney ?? 0
+        }))
+        setRows([...temp])
+    }, [violations])
 
     const handleRowEditStart = (params, event) => {
         event.defaultMuiPrevented = true;

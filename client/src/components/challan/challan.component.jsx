@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { uploadMediaThunk, httpPlateRecognize } from '../../redux/media/media.slice';
+import { uploadMediaThunk } from '../../redux/media/media.slice';
 import Media from './components/media/media.component';
 import selectMedia from '../../redux/media/media.selectors';
 import Stack from '@mui/material/Stack';
@@ -8,8 +8,18 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { MEDIA_TYPE } from '../../constants/common.constant';
-import { Divider, FormHelperText, Grid, InputLabel, MenuItem, OutlinedInput, Paper, Select, Typography } from '@mui/material';
-import { East, RestartAlt, Save } from '@mui/icons-material';
+import {
+    Divider,
+    FormHelperText,
+    Grid,
+    InputLabel,
+    MenuItem,
+    OutlinedInput,
+    Paper,
+    Select,
+    Typography
+} from '@mui/material';
+import { East, RestartAlt } from '@mui/icons-material';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 
@@ -42,18 +52,10 @@ const Challan = () => {
         });
     };
 
-    const handleUpload = () => {
+    const handleDetect = () => {
         const formData = new FormData();
         formData.append('file', media);
         dispatch(uploadMediaThunk(formData));
-    };
-
-    const handleRecognize = async () => {
-        const formData = new FormData();
-        formData.append('file', media);
-        const res = await httpPlateRecognize(formData);
-        console.log(res);
-        setPlate(res.data);
     };
 
     return (
@@ -111,7 +113,7 @@ const Challan = () => {
                             <Grid item xs={12}>
                                 <Box>
                                     <Divider textAlign="right">
-                                        <Button variant="contained" endIcon={<East />}>
+                                        <Button variant="contained" endIcon={<East />} onClick={() => handleDetect()}>
                                             Detect
                                         </Button>
                                     </Divider>
@@ -205,10 +207,10 @@ const Challan = () => {
                                                 error={Boolean(touched.eventType && errors.eventType)}
                                             />
                                             {touched.eventType && errors.eventType && (
-                                        <FormHelperText error id="standard-weight-helper-text-event-type">
-                                            {errors.eventType}
-                                        </FormHelperText>
-                                    )}
+                                                <FormHelperText error id="standard-weight-helper-text-event-type">
+                                                    {errors.eventType}
+                                                </FormHelperText>
+                                            )}
                                         </Stack>
                                         <Stack spacing={1} sx={{ mb: 2 }}>
                                             <InputLabel htmlFor="time">Time</InputLabel>
@@ -224,10 +226,10 @@ const Challan = () => {
                                                 error={Boolean(touched.time && errors.time)}
                                             />
                                             {touched.time && errors.time && (
-                                        <FormHelperText error id="standard-weight-helper-text-time">
-                                            {errors.time}
-                                        </FormHelperText>
-                                    )}
+                                                <FormHelperText error id="standard-weight-helper-text-time">
+                                                    {errors.time}
+                                                </FormHelperText>
+                                            )}
                                         </Stack>
                                         <Stack spacing={1} sx={{ mb: 2 }}>
                                             <InputLabel htmlFor="vehicle-number">Vehicle Number</InputLabel>
@@ -243,10 +245,10 @@ const Challan = () => {
                                                 error={Boolean(touched.vehicleNumber && errors.vehicleNumber)}
                                             />
                                             {touched.vehicleNumber && errors.vehicleNumber && (
-                                        <FormHelperText error id="standard-weight-helper-text-vehicle-number">
-                                            {errors.vehicleNumber}
-                                        </FormHelperText>
-                                    )}
+                                                <FormHelperText error id="standard-weight-helper-text-vehicle-number">
+                                                    {errors.vehicleNumber}
+                                                </FormHelperText>
+                                            )}
                                         </Stack>
                                         <Stack spacing={1} sx={{ mb: 2 }}>
                                             <InputLabel htmlFor="vehicle-type">Vehicle Type</InputLabel>
@@ -262,10 +264,10 @@ const Challan = () => {
                                                 error={Boolean(touched.vehicleType && errors.vehicleType)}
                                             />
                                             {touched.vehicleType && errors.vehicleType && (
-                                        <FormHelperText error id="standard-weight-helper-text-vehicle-type">
-                                            {errors.vehicleType}
-                                        </FormHelperText>
-                                    )}
+                                                <FormHelperText error id="standard-weight-helper-text-vehicle-type">
+                                                    {errors.vehicleType}
+                                                </FormHelperText>
+                                            )}
                                         </Stack>
                                         <Stack spacing={1} sx={{ mb: 2 }}>
                                             <InputLabel htmlFor="fine">Fine</InputLabel>
@@ -281,10 +283,10 @@ const Challan = () => {
                                                 error={Boolean(touched.fine && errors.fine)}
                                             />
                                             {touched.fine && errors.fine && (
-                                        <FormHelperText error id="standard-weight-helper-text-fine">
-                                            {errors.fine}
-                                        </FormHelperText>
-                                    )}
+                                                <FormHelperText error id="standard-weight-helper-text-fine">
+                                                    {errors.fine}
+                                                </FormHelperText>
+                                            )}
                                         </Stack>
                                         <Divider textAlign="right">
                                             <Stack
@@ -294,9 +296,6 @@ const Challan = () => {
                                                 sx={{ mt: 3 }}>
                                                 <Button type="reset" endIcon={<RestartAlt />}>
                                                     Reset
-                                                </Button>
-                                                <Button type="submit" variant="contained" endIcon={<Save />}>
-                                                    Save
                                                 </Button>
                                             </Stack>
                                         </Divider>
