@@ -251,7 +251,7 @@ const resendLink = async(req, res) => {
                             });
                         }
                         
-                        return makeSuccessResponse(res, 400, {
+                        return makeSuccessResponse(res, 200, {
                             message: 'A verification email has been sent to ' + getUser.email + '. It will be expire after 1 minutes. If you not get verification Email click on resend token.'
                         })
                     });

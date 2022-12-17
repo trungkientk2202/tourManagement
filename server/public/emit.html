@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Uppy</title>
+    <link href="https://releases.transloadit.com/uppy/v3.3.1/uppy.min.css" rel="stylesheet">
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src = "/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <form method="post" enctype="multipart/form-data" action="/upload">
+      <input type="file" name="file">
+      <input type="submit" value="Submit">
+    </form>
+    
+    <video src="" id="video" style="width:680px;height:320px;" autoplay="true"></video>
+    <canvas style="display:none" id="preview"></canvas>
+
+    <script type="text/javascript">
+
+      var canvas = document.getElementById("preview");
+      var context = canvas.getContext("2d");
+
+      canvas.width = 800;
+      canvas.height = 600;
+
+      context.width = canvas.width;
+      context.height = canvas.height;
+
+      var video = document.getElementById("video");
+      var socket = io();
+
+      function loadCam(stream){
+        video.src = stream;
+        console.log('camera loaded');
+      }
+      function loadFail(){
+        console.log('camera load failed');
+      }
+      function viewVideo(video, context){
+        context.drawImage(video, 0, 0, context.width, context.height);
+        socket.emit('stream', canvas.toDataURL('image/webp'));
+      }
+      $(function(){
+        navigator.getUserMedia(
+        {video: {}},
+          stream => video.srcObject = stream,
+          err => console.log(err)
+        )
+
+        if(navigator.getUserMedia)
+        {
+          navigator.getUserMedia({video: true}, loadCam, loadFail);
+        }
+
+        setInterval(() => {
+          viewVideo(video, context);
+        }, 1);
+      })
+    </script>
+
+    <!-- <script>
+        var socket = io().connect("http://localhost:3000")
+        socket.on('stream', (image) => {
+            const imgElement = document.getElementById('image');
+            // imgElement.src = `data:image/jpeg;base64,${image}`;
+            imgElement.src = image;
+            $("#logger").text(image);
+        });
+    </script> -->
+<!-- 
+    <h1>Uppy demo</h1>
+    <div id="#drag-drop-area"></div>
+    <script src="app.js"></script> -->
+  </body>
+</html>
