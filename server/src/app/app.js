@@ -38,6 +38,7 @@ app.use(express.json());
 // config security
 app.use(helmet({
     crossOriginResourcePolicy: false,
+    contentSecurityPolicy: false,
 }));
 app.use(cookieSession({
     name: 'session',
@@ -56,5 +57,12 @@ app.use(cors({
 // config app
 app.use(morgan('combined'));
 
+
+app.get('/emit', (req, res) => {
+    res.sendFile(path.join(__dirname, "../../public/emit.html"));
+})
+app.get('/visual', (req, res) => {
+    res.sendFile(path.join(__dirname, "../../public/visual.html"));
+})
 route(app);
 module.exports = app;

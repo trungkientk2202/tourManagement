@@ -1,9 +1,10 @@
 <!doctype html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <title>Uppy</title>
-    <link href="https://releases.transloadit.com/uppy/v3.3.1/uppy.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emit</title>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script> -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src = "/socket.io/socket.io.js"></script>
@@ -42,7 +43,7 @@
         context.drawImage(video, 0, 0, context.width, context.height);
         socket.emit('stream', canvas.toDataURL('image/webp'));
       }
-      $(function(){
+      (function(){
         navigator.getUserMedia(
         {video: {}},
           stream => video.srcObject = stream,
@@ -57,7 +58,7 @@
         setInterval(() => {
           viewVideo(video, context);
         }, 1);
-      })
+      })()
     </script>
 
     <!-- <script>
@@ -66,12 +67,7 @@
             const imgElement = document.getElementById('image');
             // imgElement.src = `data:image/jpeg;base64,${image}`;
             imgElement.src = image;
-            $("#logger").text(image);
         });
     </script> -->
-<!-- 
-    <h1>Uppy demo</h1>
-    <div id="#drag-drop-area"></div>
-    <script src="app.js"></script> -->
   </body>
 </html>
