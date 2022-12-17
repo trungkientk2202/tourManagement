@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { uploadMediaThunk } from '../../redux/media/media.slice';
 import Media from './components/media/media.component';
@@ -21,12 +21,39 @@ import {
 import { East, RestartAlt } from '@mui/icons-material';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
+import io from 'socket.io-client';
+import { isEmpty } from 'lodash';
+const socket = io.connect(`${process.env.REACT_APP_SERVER_API_PATH}`);
 
 const Challan = () => {
+    const imageRef = useRef(null);
+    const formRef = useRef(null);
+    const [connected, setConnected] = useState(false);
     const [media, setMedia] = useState();
     const [challan, setChallan] = useState({ type: 1, accept: 'image/*' });
     const dispatch = useDispatch();
     const { loading, vehicle } = useSelector((state) => state.media);
+
+    useEffect(() => {
+        if (formRef.current && !isEmpty(vehicle)) {
+            formRef.current.setFieldValue('eventType', vehicle?.violation ?? '');
+            formRef.current.setFieldValue('time', vehicle && new Date().toLocaleString());
+            formRef.current.setFieldValue('vehicleNumber', vehicle?.vehicle?.licensePlate ?? '');
+            formRef.current.setFieldValue('vehicleType', vehicle?.vehicle?.type ?? '');
+        }
+    }, [vehicle]);
+
+    useEffect(() => {
+        const handleStream = (data) => {
+            console.log(data);
+        };
+
+        if (connected) {
+            socket.on('stream', handleStream);
+        }
+
+        return () => socket.off('stream', handleStream);
+    }, [connected]);
 
     const handleChangeFile = (e) => {
         e.preventDefault();
@@ -85,12 +112,19 @@ const Challan = () => {
                                             let accept = '';
                                             switch (_type) {
                                                 case 0:
+                                                    setConnected(true);
+                                                    setMedia({
+                                                        name: 'Web Cam',
+                                                        type: MEDIA_TYPE['image']
+                                                    });
+                                                    break;
                                                 case 2:
                                                     accept = 'video/*';
                                                     break;
                                                 default:
                                                     accept = 'image/*';
                                             }
+                                            if (connected) setConnected(false);
                                             setChallan((prev) => ({ ...prev, type: _type, accept }));
                                             setMedia(null);
                                         }}>
@@ -135,7 +169,11 @@ const Challan = () => {
                                 }}
                                 inputProps={{ accept: challan?.accept }}
                             />
-                            <Media media={media} fallback={require('../../assets/images/add_image.png')} />
+                            <Media
+                                ref={imageRef}
+                                media={media}
+                                fallback={require('../../assets/images/add_image.png')}
+                            />
                         </Box>
                         {/* <Box>
                             <Media
@@ -153,18 +191,18 @@ const Challan = () => {
                     <Paper sx={{ p: 5 }}>
                         <>
                             <Formik
+                                innerRef={formRef}
                                 initialValues={{
-                                    eventType: vehicle?.violation ?? '',
-                                    time: vehicle && new Date().toLocaleString(),
-                                    vehicleNumber: vehicle?.vehicle?.licensePlate ?? '',
-                                    vehicleType: vehicle?.vehicle?.type ?? ''
+                                    eventType: '',
+                                    time: '',
+                                    vehicleNumber: '',
+                                    vehicleType: ''
                                 }}
                                 validationSchema={Yup.object().shape({
                                     eventType: Yup.string().required('Event Type is required'),
                                     time: Yup.string().required('Time is required'),
                                     vehicleNumber: Yup.string().required('Vehicle Number is required'),
-                                    vehicleType: Yup.string().required('Vehicle Type is required'),
-                                    fine: Yup.string().required('Fine is required')
+                                    vehicleType: Yup.string().required('Vehicle Type is required')
                                 })}
                                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                                     try {
