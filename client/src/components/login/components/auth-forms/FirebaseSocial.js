@@ -31,7 +31,7 @@ const FirebaseSocial = () => {
             sx={{ '& .MuiButton-startIcon': { mr: matchDownSM ? 0 : 1, ml: matchDownSM ? 0 : -0.5 } }}>
             <Button
                 variant="outlined"
-                color="secondary"
+                color="primary"
                 fullWidth={!matchDownSM}
                 startIcon={<img src={Google} alt="Google" />}
                 onClick={googleHandler}>
@@ -39,7 +39,7 @@ const FirebaseSocial = () => {
             </Button>
             <Button
                 variant="outlined"
-                color="secondary"
+                color="primary"
                 fullWidth={!matchDownSM}
                 startIcon={<img src={Twitter} alt="Twitter" />}
                 onClick={twitterHandler}>
@@ -47,7 +47,7 @@ const FirebaseSocial = () => {
             </Button>
             <Button
                 variant="outlined"
-                color="secondary"
+                color="primary"
                 fullWidth={!matchDownSM}
                 startIcon={<img src={Facebook} alt="Facebook" />}
                 onClick={facebookHandler}>

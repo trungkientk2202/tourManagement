@@ -9,7 +9,7 @@ import { URL_PATHS } from './constants/routes.constant';
 import { LOCAL_STORAGE } from './constants/common.constant';
 import { useSelector, useDispatch } from 'react-redux';
 import ScrollTop from './components/shared/scroll-top/scroll-top.component';
-import { logInThunk, getMeThunk } from './redux/auth/auth.slice';
+import { getMeThunk } from './redux/auth/auth.slice';
 import { selectCurrentUser } from './redux/auth/auth.selectors';
 
 function App() {
@@ -24,8 +24,6 @@ function App() {
             if (location.pathname === URL_PATHS.HOME) {
                 navigate('/dashboard');
             }
-        } else {
-            dispatch(logInThunk());
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.pathname]);

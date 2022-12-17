@@ -21,6 +21,7 @@ import {
 // third party
 import * as Yup from 'yup';
 import { Formik } from 'formik';
+import { useDispatch } from 'react-redux';
 
 // project import
 import FirebaseSocial from './FirebaseSocial';
@@ -28,11 +29,11 @@ import FirebaseSocial from './FirebaseSocial';
 // assets
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
-
-// ============================|| FIREBASE - LOGIN ||============================ //
+import { logInThunk } from '../../../../redux/auth/auth.slice';
 
 const AuthLogin = () => {
     const [checked, setChecked] = React.useState(false);
+    const dispatch = useDispatch();
 
     const [showPassword, setShowPassword] = React.useState(false);
     const handleClickShowPassword = () => {
@@ -57,6 +58,7 @@ const AuthLogin = () => {
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
+                        dispatch(logInThunk({ email: values.email, password: values.password }));
                         setStatus({ success: false });
                         setSubmitting(false);
                     } catch (err) {
@@ -141,7 +143,7 @@ const AuthLogin = () => {
                                         }
                                         label={<Typography variant="h6">Keep me sign in</Typography>}
                                     />
-                                    <Link variant="h6" component={RouterLink} to="" color="text.primary">
+                                    <Link variant="h6" component={RouterLink} to="/forgot-password" color="text.primary">
                                         Forgot Password?
                                     </Link>
                                 </Stack>

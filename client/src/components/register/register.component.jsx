@@ -1,38 +1,49 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 // material-ui
-import { Grid, Stack, Typography, Box } from '@mui/material';
+import { Grid, Stack, Typography, Box, ButtonBase } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import WestIcon from '@mui/icons-material/West';
 
 // project import
 import Card from '../shared/card/card.component';
-import AuthLogin from './components/auth-forms/auth-login.component';
-import { useSelector, useDispatch } from 'react-redux';
-import { LOCAL_STORAGE } from '../../constants/common.constant';
-import { selectCurrentUser } from '../../redux/auth/auth.selectors';
-import * as localService from '../../services/local.service';
-import { logInGoogleThunk } from '../../redux/auth/auth.slice';
+import AuthRegister from './register-form/register-form.component';
+import { useDispatch, useSelector } from 'react-redux';
+import { resendThunk } from '../../redux/auth/auth.slice';
+import selectAuth from '../../redux/auth/auth.selectors';
 
-const Login = () => {
-    const currentUser = useSelector(selectCurrentUser);
-    const navigate = useNavigate();
+const Register = () => {
     const dispatch = useDispatch();
-    const [searchParams] = useSearchParams();
+    const { error } = useSelector(selectAuth);
+    const [resend, setResend] = useState({});
 
-    console.log(searchParams.get('type'));
-
-    useEffect(() => {
-        if (searchParams.get('type') === 'GOOGLE') {
-            dispatch(logInGoogleThunk());
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchParams.get('type')]);
-
-    useEffect(() => {
-        const _currentUser = localService.getItem(LOCAL_STORAGE.currentUser);
-        if (_currentUser && currentUser) navigate('/dashboard');
-    }, [currentUser, navigate]);
+    if (resend?.isSubmitted && !error) {
+        return (
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+                <Stack>
+                    <Typography sx={{ fontWeight: 500, fontSize: '1.5rem', display: 'flex', alignItems: 'center' }}>
+                        <CheckCircleIcon sx={{ mr: 2 }} /> A Verify Link has been sent to your Email, Please confirm
+                        before login.
+                    </Typography>
+                    <Typography component="p">
+                        Don't receive any links.{' '}
+                        <ButtonBase
+                            onClick={() => {
+                                dispatch(resendThunk({ email: resend?.email }));
+                            }}>
+                            resend
+                        </ButtonBase>
+                    </Typography>
+                    <ButtonBase sx={{ justifyContent: 'flex-start', p: 2, px: 5 }} component={Link} to="/login">
+                        <WestIcon sx={{ mr: 2 }} />
+                        LogIn
+                    </ButtonBase>
+                </Stack>
+            </Box>
+        );
+    }
 
     return (
         <Box sx={{ minHeight: '100vh' }}>
@@ -75,19 +86,19 @@ const Login = () => {
                                                 justifyContent="space-between"
                                                 alignItems="baseline"
                                                 sx={{ mb: { xs: -0.5, sm: 0.5 } }}>
-                                                <Typography variant="h3">Login</Typography>
+                                                <Typography variant="h3">Sign up</Typography>
                                                 <Typography
                                                     component={Link}
-                                                    to="/register"
+                                                    to="/login"
                                                     variant="body1"
                                                     sx={{ textDecoration: 'none' }}
                                                     color="primary">
-                                                    Don&apos;t have an account?
+                                                    Already have an account?
                                                 </Typography>
                                             </Stack>
                                         </Grid>
                                         <Grid item xs={12}>
-                                            <AuthLogin />
+                                            <AuthRegister setResend={setResend} />
                                         </Grid>
                                     </Grid>
                                 </Box>
@@ -100,4 +111,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default Register;

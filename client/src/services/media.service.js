@@ -13,5 +13,8 @@ const uploadMedia = (body) => {
     );
 };
 
+const detect = (body) => apiService.makeRequest(HTTP_METHODS.post, API_PATHS.detect, {}, {}, body);
 
-export { uploadMedia };
+const getViolations = () => apiService.makeRequest(HTTP_METHODS.get, '/statistic/violations', {}, {}, {});
+
+export { uploadMedia, detect, getViolations };

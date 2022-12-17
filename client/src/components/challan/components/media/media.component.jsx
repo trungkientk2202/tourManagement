@@ -7,7 +7,7 @@ const Media = ({ media, fallback }) => {
     console.log(media);
 
     return (
-        <Paper sx={{ width: '300px', height: '500px' }}>
+        <Paper sx={{ width: '100%', height: '500px' }}>
             {media?.name && (
                 <Typography
                     component="p"
