@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
 
-const Media = ({ media, fallback }) => {
+const Media = ({ media, fallback }, ref) => {
     console.log(media);
 
     return (
@@ -23,6 +23,7 @@ const Media = ({ media, fallback }) => {
                 </Typography>
             )}
             <Box
+                ref={ref}
                 component={media?.type ?? 'img'}
                 sx={{ position: 'relative', width: '100%', height: '100%', objectFit: 'contain' }}
                 src={media?.file || fallback || require('../../../../assets/images/no_image.png')}
@@ -33,4 +34,4 @@ const Media = ({ media, fallback }) => {
     );
 };
 
-export default Media;
+export default React.forwardRef(Media);

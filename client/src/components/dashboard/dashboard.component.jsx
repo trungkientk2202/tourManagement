@@ -10,7 +10,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import SearchIcon from '@mui/icons-material/Search';
 import { useTheme, styled } from '@mui/material/styles';
 import { VerticalBarChart } from './components/chart/vertical-bar-chart.component';
-import { PieChart } from './components/chart/pie-chart.component';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';

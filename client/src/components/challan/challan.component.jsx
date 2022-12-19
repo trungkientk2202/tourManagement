@@ -25,8 +25,11 @@ import io from 'socket.io-client';
 import { isEmpty } from 'lodash';
 const socket = io.connect(`${process.env.REACT_APP_SERVER_API_PATH}`);
 
+const FPS = 0.5;
+
 const Challan = () => {
     const imageRef = useRef(null);
+    const canvasRef = useRef(null);
     const formRef = useRef(null);
     const [connected, setConnected] = useState(false);
     const [media, setMedia] = useState();
@@ -49,10 +52,38 @@ const Challan = () => {
         };
 
         if (connected) {
-            socket.on('stream', handleStream);
+            socket.on('imageReceive', handleStream);
+
+            if (canvasRef?.current) {
+                const context = canvasRef.current.getContext('2d');
+
+                canvasRef.current.width = 800;
+                canvasRef.current.height = 600;
+
+                context.width = canvasRef.current.width;
+                context.height = canvasRef.current.height;
+
+                (function () {
+                    if (navigator.getUserMedia) {
+                        navigator.getUserMedia(
+                            { video: true },
+                            (res) => {
+                                console.log(res);
+                            },
+                            (err) => {
+                                console.log(err);
+                            }
+                        );
+                    }
+
+                    setInterval(() => {
+                        socket.emit('stream', canvasRef.current.toDataURL('image/webp'));
+                    }, 1000 / FPS);
+                })();
+            }
         }
 
-        return () => socket.off('stream', handleStream);
+        return () => socket.off('imageReceive', handleStream);
     }, [connected]);
 
     const handleChangeFile = (e) => {
@@ -86,6 +117,7 @@ const Challan = () => {
 
     return (
         <div>
+            <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
             <Typography
                 sx={{
                     position: 'relative',
