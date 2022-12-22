@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 // material-ui
 import { Grid, Stack, Typography, Box } from '@mui/material';
@@ -30,8 +30,8 @@ const Login = () => {
     }, [searchParams.get('type')]);
 
     useEffect(() => {
-        const _currentUser = localService.getItem(LOCAL_STORAGE.currentUser);
-        if (_currentUser && currentUser) navigate('/dashboard');
+        const _accessToken = localService.getItem(LOCAL_STORAGE.accessToken);
+        if (_accessToken && currentUser) navigate('/dashboard');
     }, [currentUser, navigate]);
 
     return (
@@ -76,14 +76,14 @@ const Login = () => {
                                                 alignItems="baseline"
                                                 sx={{ mb: { xs: -0.5, sm: 0.5 } }}>
                                                 <Typography variant="h3">Login</Typography>
-                                                <Typography
+                                                {/* <Typography
                                                     component={Link}
                                                     to="/register"
                                                     variant="body1"
                                                     sx={{ textDecoration: 'none' }}
                                                     color="primary">
                                                     Don&apos;t have an account?
-                                                </Typography>
+                                                </Typography> */}
                                             </Stack>
                                         </Grid>
                                         <Grid item xs={12}>

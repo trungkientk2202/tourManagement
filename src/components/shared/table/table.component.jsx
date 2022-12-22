@@ -5,26 +5,15 @@ import AddIcon from '@mui/icons-material/Add';
 import Stack from '@mui/material/Stack';
 
 import { alpha, useTheme } from '@mui/material/styles';
-import { DataGrid, GridRowModes, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
-
-import { randomId } from '@mui/x-data-grid-generator';
+import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
 
 function EditToolbar(props) {
-    const { setRows, setRowModesModel } = props;
-
-    const handleClick = () => {
-        const id = randomId();
-        setRows((oldRows) => [...oldRows, { id, name: '', age: '', isNew: true }]);
-        setRowModesModel((oldModel) => ({
-            ...oldModel,
-            [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' }
-        }));
-    };
+    const { handleClickOpen } = props;
 
     return (
         <GridToolbarContainer>
             <Stack direction="row" justifyContent="space-between" flexGrow={1} sx={{ pr: 5 }}>
-                <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+                <Button color="primary" startIcon={<AddIcon />} onClick={handleClickOpen}>
                     Add record
                 </Button>
                 <GridToolbar />
@@ -34,7 +23,17 @@ function EditToolbar(props) {
 }
 
 const Table = (props) => {
-    const { columns, rows, setRows, rowModesModel, setRowModesModel, processRowUpdate } = props;
+    const {
+        columns,
+        rows,
+        rowModesModel,
+        setRowModesModel,
+        processRowUpdate,
+        getDetailPanelContent,
+        getDetailPanelHeight,
+        initialState,
+        handleClickOpen
+    } = props;
     const theme = useTheme();
 
     const handleRowEditStart = (params, event) => {
@@ -83,13 +82,17 @@ const Table = (props) => {
                         Toolbar: EditToolbar
                     }}
                     componentsProps={{
-                        toolbar: { setRows, setRowModesModel }
+                        toolbar: { handleClickOpen }
                     }}
                     pageSize={5}
                     rowsPerPageOptions={[5, 10, 50]}
                     checkboxSelection
                     disableSelectionOnClick
+                    rowThreshold={0}
                     experimentalFeatures={{ newEditingApi: true }}
+                    getDetailPanelHeight={getDetailPanelHeight}
+                    getDetailPanelContent={getDetailPanelContent}
+                    initialState={initialState}
                 />
             </Box>
         </div>

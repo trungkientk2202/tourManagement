@@ -5,8 +5,8 @@ export default function authHeader() {
     const _accessToken = getItem(LOCAL_STORAGE.accessToken);
 
     if (_accessToken) {
-        return { 'x-access-token': 'Bearer ' + _accessToken }; // for NodeJs back-end
+        return { 'Authorization': 'Bearer ' + _accessToken }; // for NodeJs back-end
     } else {
-        return { 'x-access-token': '' };
+        return { 'Authorization': '' };
     }
 }

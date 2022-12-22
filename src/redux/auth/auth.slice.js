@@ -164,10 +164,8 @@ const logInGoogleThunk = createAsyncThunk('auth/logInGoogle', async (body, { dis
 const logInThunk = createAsyncThunk('auth/logIn', async (body, { dispatch, rejectWithValue }) => {
     try {
         const res = await authService.logIn(body);
-        console.log(res);
-        // -----------
-        dispatch(getMeThunk());
-        return;
+        localService.setItem(LOCAL_STORAGE.accessToken, JSON.stringify(res.data?.token));
+        return res.data?.taiKhoan;
     } catch (error) {
         return rejectWithValue(error);
     }
@@ -175,9 +173,9 @@ const logInThunk = createAsyncThunk('auth/logIn', async (body, { dispatch, rejec
 
 const logoutThunk = createAsyncThunk('auth/logout', async (_, { dispatch, rejectWithValue }) => {
     try {
-        await authService.logout();
+        // await authService.logout();
         // -----------
-        localService.removeItem(LOCAL_STORAGE.currentUser);
+        localService.removeItem(LOCAL_STORAGE.accessToken);
         dispatch(removeUser());
         return;
     } catch (error) {

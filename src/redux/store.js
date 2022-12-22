@@ -1,10 +1,18 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import authReducer from './auth/auth.slice';
 import mediaReducer from './media/media.slice';
+import tourReducer from './tour/tour.slice';
+import destinationReducer from './destination/destination.slice';
+import scheduleReducer from './schedule/schedule.slice';
+import userReducer from './user/user.slice';
 
 const rootReducer = combineReducers({
     auth: authReducer,
-    media: mediaReducer
+    media: mediaReducer,
+    tour: tourReducer,
+    destination: destinationReducer,
+    schedule: scheduleReducer,
+    user: userReducer
 });
 
 const store = configureStore({

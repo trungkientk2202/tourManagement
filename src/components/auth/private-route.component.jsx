@@ -7,13 +7,13 @@ import { selectCurrentUser } from '../../redux/auth/auth.selectors';
 
 const PrivateRoute = (props) => {
     const { children } = props;
-    const _currentUser = localService.getItem(LOCAL_STORAGE.currentUser);
+    const _accessToken = localService.getItem(LOCAL_STORAGE.accessToken);
     const currentUser = useSelector(selectCurrentUser);
     const location = useLocation();
 
     useEffect(() => {}, [currentUser]);
 
-    if (!_currentUser) {
+    if (!_accessToken) {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 

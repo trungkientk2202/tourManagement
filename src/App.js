@@ -7,20 +7,15 @@ import { useNavigate } from 'react-router-dom';
 import { getItem } from './services/local.service';
 import { URL_PATHS } from './constants/routes.constant';
 import { LOCAL_STORAGE } from './constants/common.constant';
-import { useSelector, useDispatch } from 'react-redux';
 import ScrollTop from './components/shared/scroll-top/scroll-top.component';
-import { getMeThunk } from './redux/auth/auth.slice';
-import { selectCurrentUser } from './redux/auth/auth.selectors';
 
 function App() {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const currentUser = useSelector(selectCurrentUser);
 
     useEffect(() => {
-        const _currentUser = getItem(LOCAL_STORAGE.currentUser);
-        if (_currentUser) {
-            if (!currentUser) dispatch(getMeThunk());
+        const _accessToken = getItem(LOCAL_STORAGE.accessToken);
+        if (_accessToken) {
+            // if (!currentUser) dispatch(getMeThunk());
             if (location.pathname === URL_PATHS.HOME) {
                 navigate('/dashboard');
             }

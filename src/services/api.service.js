@@ -7,7 +7,7 @@ import { trackPromise } from 'react-promise-tracker';
 import { get, includes } from 'lodash';
 
 const axiosInstance = axios.create({
-    baseURL: `${process.env.REACT_APP_SERVER_API_PATH}/api`,
+    baseURL: `${process.env.REACT_APP_SERVER_API_PATH}`,
     withCredentials: true,
     headers: {
         Accept: 'application/json',
@@ -33,6 +33,7 @@ axiosInstance.interceptors.response.use(
         const originalConfig = error.config;
 
         if (
+            originalConfig.url !== '/auth/sign_in' &&
             [HTTP_STATUS_CODES.UNAUTHORIZED.code, HTTP_STATUS_CODES.FORBIDDEN.code].includes(error?.response?.status) &&
             !originalConfig._retry
         ) {
@@ -57,9 +58,9 @@ axiosInstance.interceptors.response.use(
 );
 
 const handleError = (error) => {
-    const _currentUser = localService.getItem(LOCAL_STORAGE.currentUser);
+    const _accessToken = localService.getItem(LOCAL_STORAGE.accessToken);
 
-    if (_currentUser) {
+    if (_accessToken) {
         return Promise.reject({
             status: 500,
             data: {
@@ -72,13 +73,13 @@ const handleError = (error) => {
 };
 const handleResponse = (response) => {
     const status = get(response, 'status', 500).toString();
-    const _currentUser = localService.getItem(LOCAL_STORAGE.currentUser);
+    const _accessToken = localService.getItem(LOCAL_STORAGE.accessToken);
 
     return new Promise((resolve, reject) => {
         if (+status !== HTTP_STATUS_CODES.OK.code) {
             if (
                 includes([HTTP_STATUS_CODES.UNAUTHORIZED.code, HTTP_STATUS_CODES.FORBIDDEN.code], +status) &&
-                !_currentUser
+                !_accessToken
             ) {
                 // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
                 // authenticationService.logout();

@@ -21,7 +21,7 @@ const HTTP_STATUS_CODES = {
 };
 
 const API_PATHS = {
-    logIn: '/user/login',
+    logIn: '/login',
     register: '/user/register',
     logInByGoogle: '/user/auth/google',
     logInByGoogleSuccess: '/user/auth/google/login/success',
@@ -30,7 +30,7 @@ const API_PATHS = {
     changePassword: '/auth/change_password',
     forgotPassword: '/user/forgot-password',
     resetPassword: '/user/reset-password',
-    editPassword: '/user/edit',
+    deletePassword: '/user/edit',
     resend: '/user/resend',
     verify: '/user/confirmation',
     loadProfile: '/user/get-current',
@@ -39,7 +39,31 @@ const API_PATHS = {
 
     detect: '/recognize/detect',
     uploadMedia: '/image-video/upload',
-    getMedia: '/image-video'
+    getMedia: '/image-video',
+
+    getTourList: '/tour/getAll',
+    getTourTypeList: '/loaiTour/getAll',
+    addTour: '/tour/add',
+    editTour: '/tour/edit',
+    deleteTour: '/tour/delete',
+
+    getDestinationList: '/diaDiem/getAll',
+    addDestination: '/diaDiem/add',
+    editDestination: '/diaDiem/edit',
+    deleteDestination: '/diaDiem/delete',
+
+    getScheduleList: '/lichTrinh/getAll',
+    getScheduleByTour: '/lichTrinh/findByMaTour',
+    addSchedule: '/lichTrinh/add',
+    editSchedule: '/lichTrinh/edit',
+    deleteSchedule: '/lichTrinh/delete',
+
+    getUserList: '/khachHang/getAll',
+    getUserManagerList: '/tk/getAll',
+    getUserByTour: '/tgtour/findByMaTour',
+    addUser: '/khachHang/add',
+    editUser: '/khachHang/edit',
+    deleteUser: '/khachHang/delete'
 };
 
 export { HTTP_METHODS, HTTP_STATUS_CODES, API_PATHS };

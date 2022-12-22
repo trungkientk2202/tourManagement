@@ -5,7 +5,6 @@ import { Link as RouterLink } from 'react-router-dom';
 import {
     Button,
     Checkbox,
-    Divider,
     FormControlLabel,
     FormHelperText,
     Grid,
@@ -24,7 +23,7 @@ import { Formik } from 'formik';
 import { useDispatch } from 'react-redux';
 
 // project import
-import FirebaseSocial from './FirebaseSocial';
+// import FirebaseSocial from './FirebaseSocial';
 
 // assets
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
@@ -48,17 +47,17 @@ const AuthLogin = () => {
         <>
             <Formik
                 initialValues={{
-                    email: 'info@codedthemes.com',
+                    username: 'info@codedthemes.com',
                     password: '123456',
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
-                    email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+                    username: Yup.string().max(255).required('Username is required'),
                     password: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
-                        dispatch(logInThunk({ email: values.email, password: values.password }));
+                        dispatch(logInThunk({ username: values.username, password: values.password }));
                         setStatus({ success: false });
                         setSubmitting(false);
                     } catch (err) {
@@ -72,19 +71,19 @@ const AuthLogin = () => {
                         <Grid container spacing={3}>
                             <Grid item xs={12}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="email-login">Email Address</InputLabel>
+                                    <InputLabel htmlFor="email-login">Username</InputLabel>
                                     <OutlinedInput
                                         id="email-login"
-                                        type="email"
-                                        value={values.email}
-                                        name="email"
+                                        type="text"
+                                        value={values.username}
+                                        name="username"
                                         onBlur={handleBlur}
                                         onChange={handleChange}
-                                        placeholder="Enter email address"
+                                        placeholder="Enter username"
                                         fullWidth
-                                        error={Boolean(touched.email && errors.email)}
+                                        error={Boolean(touched.username && errors.username)}
                                     />
-                                    {touched.email && errors.email && (
+                                    {touched.username && errors.username && (
                                         <FormHelperText error id="standard-weight-helper-text-email-login">
                                             {errors.email}
                                         </FormHelperText>
@@ -165,14 +164,14 @@ const AuthLogin = () => {
                                     Login
                                 </Button>
                             </Grid>
-                            <Grid item xs={12}>
+                            {/* <Grid item xs={12}>
                                 <Divider>
                                     <Typography variant="caption"> Login with</Typography>
                                 </Divider>
                             </Grid>
                             <Grid item xs={12}>
                                 <FirebaseSocial />
-                            </Grid>
+                            </Grid> */}
                         </Grid>
                     </form>
                 )}

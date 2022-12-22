@@ -8,7 +8,10 @@ import DashboardLayout from '../layouts/dashboard.layout';
 
 // render - login
 const Dashboard = loadable(React.lazy(() => import('../components/dashboard/dashboard.component')));
-const Evidence = loadable(React.lazy(() => import('../components/evidence/envidance.component')));
+const Tour = loadable(React.lazy(() => import('../components/tour/tour.component')));
+const TourDetail = loadable(React.lazy(() => import('../components/tour/tour-detail/tour-detail.component')));
+const Destination = loadable(React.lazy(() => import('../components/destination/destination.component')));
+const User = loadable(React.lazy(() => import('../components/user/user.component')));
 const Challan = loadable(React.lazy(() => import('../components/challan/challan.component')));
 const Profile = loadable(React.lazy(() => import('../components/profile/profile.component')));
 
@@ -25,8 +28,20 @@ const AuthRoutes = {
             element: <Dashboard />
         },
         {
-            path: URL_PATHS.EVIDENCE,
-            element: <Evidence />
+            path: URL_PATHS.TOUR,
+            element: <Tour />
+        },
+        {
+            path: URL_PATHS.TOUR + '/' + URL_PATHS.TOUR_ID,
+            element: <TourDetail />
+        },
+        {
+            path: URL_PATHS.DESTINATION,
+            element: <Destination />
+        },
+        {
+            path: URL_PATHS.USER,
+            element: <User />
         },
         {
             path: URL_PATHS.CHALLAN,

@@ -56,7 +56,7 @@ function Header({ open, handleDrawerOpen }) {
                             <MenuIcon />
                         </IconButton>
                         <Typography variant="h6" noWrap component="div">
-                            Intelligent Traffic Management System
+                            Tour Management System
                         </Typography>
                     </Stack>
                     <Button variant="text" sx={{ color: '#fff' }} onClick={handleLogOut}>

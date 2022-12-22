@@ -8,6 +8,11 @@ const URL_PATHS = {
     DASHBOARD: 'dashboard',
     CHALLAN: 'challan',
     EVIDENCE: 'evidence',
+    TOUR: 'tour',
+    TOUR_ID: ':tourId',
+    DESTINATION: 'destination',
+    SCHEDULE: 'schedule',
+    USER: 'user',
     PROFILE: 'profile'
 };
 

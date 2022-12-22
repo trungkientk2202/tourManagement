@@ -11,9 +11,12 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import PersonIcon from '@mui/icons-material/Person';
-import ShowChartIcon from '@mui/icons-material/ShowChart';
+import GroupsIcon from '@mui/icons-material/Groups';
+// import ShowChartIcon from '@mui/icons-material/ShowChart';
 import SpeedIcon from '@mui/icons-material/Speed';
-import CameraIcon from '@mui/icons-material/Camera';
+import TourIcon from '@mui/icons-material/Tour';
+import PlaceIcon from '@mui/icons-material/Place';
+// import CameraIcon from '@mui/icons-material/Camera';
 import { URL_PATHS } from '../../../constants/routes.constant';
 import { Link } from 'react-router-dom';
 
@@ -26,15 +29,25 @@ const menuList1 = [
         link: URL_PATHS.HOME + URL_PATHS.DASHBOARD
     },
     {
-        name: 'Envidance',
-        icon: <ShowChartIcon />,
-        link: URL_PATHS.HOME + URL_PATHS.EVIDENCE
+        name: 'User',
+        icon: <GroupsIcon />,
+        link: URL_PATHS.HOME + URL_PATHS.USER
     },
     {
-        name: 'Challan Details',
-        icon: <CameraIcon />,
-        link: URL_PATHS.HOME + URL_PATHS.CHALLAN
+        name: 'Tour',
+        icon: <TourIcon />,
+        link: URL_PATHS.HOME + URL_PATHS.TOUR
+    },
+    {
+        name: 'Destination',
+        icon: <PlaceIcon />,
+        link: URL_PATHS.HOME + URL_PATHS.DESTINATION
     }
+    // {
+    //     name: 'Challan Details',
+    //     icon: <CameraIcon />,
+    //     link: URL_PATHS.HOME + URL_PATHS.CHALLAN
+    // }
 ];
 const menuList2 = [
     {
