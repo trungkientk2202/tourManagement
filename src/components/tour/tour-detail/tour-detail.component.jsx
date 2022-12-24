@@ -5,6 +5,7 @@ import Stack from '@mui/material/Stack';
 import WestIcon from '@mui/icons-material/West';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import SearchIcon from '@mui/icons-material/SearchOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import { GridActionsCellItem, GridRowModes } from '@mui/x-data-grid';
@@ -15,11 +16,12 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Box, Divider, Tab, Tabs, TextField, Button } from '@mui/material';
+import { Box, Divider, Tab, Tabs, TextField, Button, IconButton, Avatar } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { Link, useParams } from 'react-router-dom';
 import { getScheduleByTour } from '../../../redux/schedule/schedule.slice';
-import { getUserByTour } from '../../../redux/user/user.slice';
+import { getUserByTour, searchThunk } from '../../../redux/user/user.slice';
+import { useState } from 'react';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -51,14 +53,15 @@ const TourDetail = () => {
     const dispatch = useDispatch();
     const theme = useTheme();
     const scheduleList = useSelector((state) => state.schedule.scheduleList);
-    const userList = useSelector((state) => state.user.userList);
+    const { user, userList } = useSelector((state) => state.user);
     const { tourId } = useParams();
-    const [rows, setRows] = React.useState([]);
-    const [rowModesModel, setRowModesModel] = React.useState({});
-    const [rows1, setRows1] = React.useState([]);
-    const [rowModesModel1, setRowModesModel1] = React.useState({});
-    const [tab, setTab] = React.useState(0);
-    const [open1, setOpen1] = React.useState(false);
+    const [rows, setRows] = useState([]);
+    const [rowModesModel, setRowModesModel] = useState({});
+    const [rows1, setRows1] = useState([]);
+    const [rowModesModel1, setRowModesModel1] = useState({});
+    const [tab, setTab] = useState(0);
+    const [open1, setOpen1] = useState(false);
+    const [sdt, setSdt] = useState();
 
     const handleClickOpenUser = () => {
         setOpen1(true);
@@ -82,7 +85,7 @@ const TourDetail = () => {
 
     // 1 - planned, 2 - on going, 3 - fulfilled
     useEffect(() => {
-        const temp = scheduleList.map((_v, index) => ({
+        const temp = scheduleList?.map((_v, index) => ({
             id: `${_v?.id.maTour}${_v?.id.maDiaDiem}${_v?.id.sttLichTrinh}` ?? index,
             destinationId: _v?.diaDiem?.maDiaDiem,
             ordinal: _v?.id.sttLichTrinh,
@@ -95,14 +98,15 @@ const TourDetail = () => {
     }, [scheduleList]);
 
     useEffect(() => {
-        const temp = userList.map((_v, index) => ({
-            id: _v?.khachHang?.sdt ?? index,
-            name: _v?.khachHang?.ten,
-            phoneNumber: _v?.khachHang.sdt,
-            sex: _v?.khachHang?.phai,
-            birth: _v?.khachHang?.ngaySinh ?? '',
-            zalo: _v?.khachHang?.zalo ?? ''
-        }));
+        const temp =
+            userList?.map((_v, index) => ({
+                id: _v?.khachHang?.sdt ?? index,
+                name: _v?.khachHang?.ten,
+                phoneNumber: _v?.khachHang.sdt,
+                sex: _v?.khachHang?.phai,
+                birth: _v?.khachHang?.ngaySinh ?? '',
+                zalo: _v?.khachHang?.zalo ?? ''
+            })) ?? [];
         setRows1([...temp]);
     }, [userList]);
 
@@ -255,7 +259,7 @@ const TourDetail = () => {
 
     return (
         <div>
-            <Link to={'/schedule'} style={{ textDecoration: 'none', color: theme.palette.grey[800] }}>
+            <Link to={'/tour'} style={{ textDecoration: 'none', color: theme.palette.grey[800] }}>
                 <Stack direction={'row'} alignItems="center">
                     <WestIcon sx={{ mr: 2 }} />
                     <Typography
@@ -328,26 +332,50 @@ const TourDetail = () => {
                 </TabPanel>
             </Paper>
 
-            <Dialog open1={open1} onClose={handleClose1}>
-                <DialogTitle>Subscribe</DialogTitle>
+            <Dialog open={open1} onClose={handleClose1}>
+                <DialogTitle>Add User</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
-                        To subscribe to this website, please enter your email address here. We will send updates
-                        occasionally.
+                    <DialogContentText sx={{ pr: 35 }}>
+                        To Add a User the Tour, PLease Search and Add!
                     </DialogContentText>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="name"
-                        label="Email Address"
-                        type="email"
-                        fullWidth
-                        variant="standard"
-                    />
+                    <Box sx={{ position: 'relative' }}>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="sdt"
+                            name={'sdt'}
+                            value={sdt}
+                            onChange={(e) => setSdt(e.target.value)}
+                            label="Phone Number"
+                            fullWidth
+                            variant="standard"
+                        />
+                        <IconButton
+                            aria-label="search"
+                            onClick={() => dispatch(searchThunk(sdt))}
+                            sx={{ position: 'absolute', bottom: 10, right: 15 }}>
+                            <SearchIcon />
+                        </IconButton>
+                    </Box>
+                    <Stack sx={{ mt: 2 }} direction="row" alignItems={'center'}>
+                        {typeof user !== 'undefined' && user ? (
+                            <>
+                                <Avatar>A</Avatar>
+                                <Box sx={{ ml: 2 }}>
+                                    <Typography sx={{ fontWeight: 'bold' }}>name</Typography>
+                                    <Typography>sdt</Typography>
+                                </Box>
+                            </>
+                        ) : (
+                            <Typography sx={{ color: '#e13102' }}>Not Found</Typography>
+                        )}
+                    </Stack>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose1}>Cancel</Button>
-                    <Button onClick={handleClose1}>Add</Button>
+                    <Button onClick={handleClose1} variant={'contained'} disabled={true}>
+                        Add
+                    </Button>
                 </DialogActions>
             </Dialog>
         </div>

@@ -21,7 +21,17 @@ import CancelIcon from '@mui/icons-material/Close';
 import { GridActionsCellItem, GridRowModes } from '@mui/x-data-grid';
 import { useDispatch, useSelector } from 'react-redux';
 import Table from '../shared/table/table.component';
-import { Button, Box, FormHelperText, Grid, InputLabel, OutlinedInput, FormControlLabel } from '@mui/material';
+import {
+    Button,
+    Box,
+    FormHelperText,
+    Grid,
+    InputLabel,
+    OutlinedInput,
+    FormControlLabel,
+    Select,
+    MenuItem
+} from '@mui/material';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { styled } from '@mui/material/styles';
@@ -33,7 +43,16 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { isEmpty } from 'lodash';
-import { getUserManagers, getUsers } from '../../redux/user/user.slice';
+import {
+    addUserManagerThunk,
+    addUserThunk,
+    deleteUserThunk,
+    editUserManagerThunk,
+    editUserThunk,
+    getRolesThunk,
+    getUserManagers,
+    getUsers
+} from '../../redux/user/user.slice';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -97,6 +116,7 @@ const Tour = () => {
     const dispatch = useDispatch();
     const formRef = React.useRef(null);
     const userList = useSelector((state) => state.user.userList);
+    const roleList = useSelector((state) => state.user.roleList);
     const [rows, setRows] = React.useState([]);
     const [rowModesModel, setRowModesModel] = React.useState({});
     const [tab, setTab] = React.useState(0);
@@ -112,15 +132,16 @@ const Tour = () => {
     const handleClose = () => {
         setOpen(false);
         setMode(null);
+        formRef.current.resetForm();
     };
     const handleClickOpen = () => {
         setOpen(true);
         setMode('add');
-        if (row) setRow(null);
     };
 
     useEffect(() => {
         dispatch(getUsers());
+        dispatch(getRolesThunk());
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -132,7 +153,8 @@ const Tour = () => {
             phoneNumber: _v?.sdt,
             sex: _v?.phai,
             birth: _v?.ngaySinh ?? '',
-            zalo: _v?.zalo ?? ''
+            zalo: _v?.zalo ?? '',
+            role: _v?.loaiTaiKhoan?.tenLoaiTK ?? ''
         }));
         setRows([...temp]);
     }, [userList]);
@@ -145,8 +167,6 @@ const Tour = () => {
                 formRef.current.setFieldValue('sex', row?.sex ?? '');
                 formRef.current.setFieldValue('zalo', row?.zalo ?? '');
                 formRef.current.setFieldValue('birth', dayjs(row?.birth ?? ''));
-            } else {
-                formRef.current.resetForm();
             }
         }
     }, [row]);
@@ -164,7 +184,10 @@ const Tour = () => {
     };
 
     const handleDeleteClick = (id) => () => {
-        setRows(rows.filter((row) => row.id !== id));
+        // setRows(rows.filter((row) => row.id !== id));
+        if (window.confirm('Are you sure!') === true) {
+            if (tab === 0) dispatch(deleteUserThunk({ id: id, action: () => dispatch(getUsers()) }));
+        }
     };
 
     const handleCancelClick = (id) => () => {
@@ -300,7 +323,15 @@ const Tour = () => {
                 <TabPanel value={tab} index={1}>
                     <Paper>
                         <Table
-                            columns={columns}
+                            columns={[
+                                ...columns,
+                                {
+                                    field: 'role',
+                                    headerName: 'Role',
+                                    width: 180,
+                                    editable: true
+                                }
+                            ]}
                             rows={rows}
                             setRows={setRows}
                             rowModesModel={rowModesModel}
@@ -329,16 +360,80 @@ const Tour = () => {
                                 phoneNumber: '',
                                 sex: '',
                                 birth: new Date().toLocaleString(),
-                                zalo: ''
+                                zalo: '',
+                                ...(tab === 1 && { role: '' })
                             }}
                             validationSchema={Yup.object().shape({
                                 name: Yup.string().max(255).required('Destination is required'),
-                                phoneNumber: Yup.string().max(255).required('Phone Number is required'),
+                                phoneNumber: Yup.string().max(10).required('Phone Number is required'),
                                 birth: Yup.string().required('Birth is required'),
-                                sex: Yup.string().required('Sex is required')
+                                sex: Yup.string().required('Sex is required'),
+                                zalo: Yup.string().max(10),
+                                ...(tab === 1 && { role: Yup.string().required('Role is required') })
                             })}
                             onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                                 try {
+                                    if (mode === 'add' && tab === 0)
+                                        dispatch(
+                                            addUserThunk({
+                                                body: {
+                                                    sdt: values.phoneNumber,
+                                                    ten: values.name,
+                                                    matKhau: '12345',
+                                                    phai: values.sex,
+                                                    ngaySinh: values.birth,
+                                                    zalo: values.zalo
+                                                },
+                                                action: () => dispatch(getUsers())
+                                            })
+                                        );
+                                    else if (mode === 'add' && tab === 1) {
+                                        dispatch(
+                                            addUserManagerThunk({
+                                                body: {
+                                                    sdt: values.phoneNumber,
+                                                    ten: values.name,
+                                                    matKhau: '12345',
+                                                    phai: values.sex,
+                                                    ngaySinh: values.birth,
+                                                    zalo: values.zalo,
+                                                    maLoaiTaiKhoan: values.role
+                                                },
+                                                action: () => dispatch(getUserManagers())
+                                            })
+                                        );
+                                    } else if (mode === 'edit' && tab === 1) {
+                                        dispatch(
+                                            editUserManagerThunk({
+                                                body: {
+                                                    id: row.id,
+                                                    sdt: values.phoneNumber,
+                                                    ten: values.name,
+                                                    matKhau: '12345',
+                                                    phai: values.sex,
+                                                    ngaySinh: values.birth,
+                                                    zalo: values.zalo,
+                                                    maLoaiTaiKhoan: values.role
+                                                },
+                                                action: () => dispatch(getUserManagers())
+                                            })
+                                        );
+                                    } else if (mode === 'edit' && tab === 0)
+                                        dispatch(
+                                            editUserThunk({
+                                                body: {
+                                                    id: row.id,
+                                                    sdt: values.phoneNumber,
+                                                    ten: values.name,
+                                                    matKhau: '12345',
+                                                    phai: values.sex,
+                                                    ngaySinh: values.birth,
+                                                    zalo: values.zalo
+                                                },
+                                                action: () => dispatch(getUsers())
+                                            })
+                                        );
+                                    handleClose();
                                     setStatus({ success: false });
                                     setSubmitting(false);
                                 } catch (err) {
@@ -466,6 +561,34 @@ const Tour = () => {
                                         {errors.submit && (
                                             <Grid item xs={12}>
                                                 <FormHelperText error>{errors.submit}</FormHelperText>
+                                            </Grid>
+                                        )}
+                                        {tab === 1 && (
+                                            <Grid item xs={12}>
+                                                <Stack spacing={1}>
+                                                    <InputLabel htmlFor="role">Role</InputLabel>
+                                                    <Select
+                                                        id="role"
+                                                        value={values.role}
+                                                        onBlur={handleBlur}
+                                                        name="role"
+                                                        onChange={handleChange}>
+                                                        {roleList?.map((_r) => {
+                                                            return (
+                                                                <MenuItem key={_r.maLoaiTK} value={_r.maLoaiTK}>
+                                                                    {_r.tenLoaiTK}
+                                                                </MenuItem>
+                                                            );
+                                                        })}
+                                                    </Select>
+                                                    {touched.role && errors.role && (
+                                                        <FormHelperText
+                                                            error
+                                                            id="standard-weight-helper-text-email-login">
+                                                            {errors.role}
+                                                        </FormHelperText>
+                                                    )}
+                                                </Stack>
                                             </Grid>
                                         )}
                                         <Grid item xs={12}>

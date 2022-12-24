@@ -57,5 +57,36 @@ export const getTourTypes = createAsyncThunk('tour/typeList', async (_, { reject
     }
 });
 
+
+export const deleteTourThunk = createAsyncThunk('tour/delete', async ({ id, action }, { rejectWithValue }) => {
+    try {
+        await tourService.deleteTour(id);
+        action();
+        return;
+    } catch (error) {
+        return rejectWithValue(error);
+    }
+});
+
+export const addTourThunk = createAsyncThunk('tour/add', async ({ body, action }, { rejectWithValue }) => {
+    try {
+        await tourService.addTour(body);
+        action();
+        return;
+    } catch (error) {
+        return rejectWithValue(error);
+    }
+});
+
+export const editTourThunk = createAsyncThunk('tour/edit', async ({ body, action }, { rejectWithValue }) => {
+    try {
+        await tourService.editTour(body);
+        action();
+        return;
+    } catch (error) {
+        return rejectWithValue(error);
+    }
+});
+
 const { reducer } = authSlice;
 export default reducer;

@@ -14,6 +14,10 @@ export const getUserByTour = (tourId) => {
     return apiService.makeRequest(HTTP_METHODS.get, API_PATHS.getUserByTour + '/' + tourId, {}, authHeader(), {});
 };
 
+export const getRoleList = () => {
+    return apiService.makeRequest(HTTP_METHODS.get, API_PATHS.getRoleList, {}, authHeader(), {});
+};
+
 export const deleteUser = (id) => {
     return apiService.makeRequest(HTTP_METHODS.delete, API_PATHS.deleteUser + '/' + id, {}, authHeader(), {});
 };
@@ -24,4 +28,20 @@ export const addUser = (body) => {
 
 export const editUser = ({ id, ...body }) => {
     return apiService.makeRequest(HTTP_METHODS.post, API_PATHS.editUser + '/' + id, {}, authHeader(), body);
+};
+
+export const deleteUserManager = (id) => {
+    return apiService.makeRequest(HTTP_METHODS.delete, API_PATHS.deleteUserManager + '/' + id, {}, authHeader(), {});
+};
+
+export const addUserManager = (body) => {
+    return apiService.makeRequest(HTTP_METHODS.post, API_PATHS.addUserManager, {}, authHeader(), body);
+};
+
+export const editUserManager = ({ id, ...body }) => {
+    return apiService.makeRequest(HTTP_METHODS.post, API_PATHS.editUserManager + '/' + id, {}, authHeader(), body);
+};
+
+export const getUserByPhone = (phoneNumber) => {
+    return apiService.makeRequest(HTTP_METHODS.get, API_PATHS.getUserByPhone + '/' + phoneNumber, {}, authHeader(), {});
 };

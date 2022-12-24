@@ -60,10 +60,15 @@ const API_PATHS = {
 
     getUserList: '/khachHang/getAll',
     getUserManagerList: '/tk/getAll',
+    getRoleList: '/loaitk/getAll',
     getUserByTour: '/tgtour/findByMaTour',
+    getUserByPhone: '/khachHang/find',
     addUser: '/khachHang/add',
     editUser: '/khachHang/edit',
-    deleteUser: '/khachHang/delete'
+    deleteUser: '/khachHang/delete',
+    addUserManager: '/tk/add',
+    editUserManager: '/tk/edit',
+    deleteUserManager: '/tk/delete'
 };
 
 export { HTTP_METHODS, HTTP_STATUS_CODES, API_PATHS };

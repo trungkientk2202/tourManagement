@@ -22,9 +22,10 @@ import Table from '../shared/table/table.component';
 import {
     addDestinationThunk,
     deleteDestinationThunk,
+    editDestinationThunk,
     getDestinations
 } from '../../redux/destination/destination.slice';
-import { Tooltip, Button, FormHelperText, Grid, InputLabel, OutlinedInput, FormControlLabel } from '@mui/material';
+import { Tooltip, Button, FormHelperText, Grid, InputLabel, OutlinedInput } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -75,11 +76,12 @@ const Tour = () => {
     const handleClose = () => {
         setOpen(false);
         setMode(null);
+        formRef.current.resetForm();
     };
+
     const handleClickOpen = () => {
         setOpen(true);
         setMode('add');
-        if (row) setRow(null);
     };
 
     useEffect(() => {
@@ -104,8 +106,6 @@ const Tour = () => {
                 formRef.current.setFieldValue('name', row?.name ?? '');
                 formRef.current.setFieldValue('description', row?.description ?? '');
                 formRef.current.setFieldValue('country', row?.country ?? '');
-            } else {
-                formRef.current.resetForm();
             }
         }
     }, [row]);
@@ -125,8 +125,7 @@ const Tour = () => {
     const handleDeleteClick = (id) => () => {
         // setRows(rows.filter((row) => row.id !== id));
         if (window.confirm('Are you sure!') === true) {
-            dispatch(deleteDestinationThunk(id));
-            dispatch(getDestinations());
+            dispatch(deleteDestinationThunk({ id: id, action: () => dispatch(getDestinations()) }));
         }
     };
 
@@ -236,7 +235,6 @@ const Tour = () => {
                 <Table
                     columns={columns}
                     rows={rows}
-                    setRows={setRows}
                     rowModesModel={rowModesModel}
                     setRowModesModel={setRowModesModel}
                     processRowUpdate={processRowUpdate}
@@ -270,21 +268,27 @@ const Tour = () => {
                                     if (mode === 'add')
                                         dispatch(
                                             addDestinationThunk({
-                                                tenDiaDiem: values.name,
-                                                moTa: values.description,
-                                                tinhThanh: values.country
+                                                body: {
+                                                    tenDiaDiem: values.name,
+                                                    moTa: values.description,
+                                                    tinhThanh: values.country
+                                                },
+                                                action: () => dispatch(getDestinations())
                                             })
                                         );
                                     else if (mode === 'edit')
                                         dispatch(
-                                            addDestinationThunk({
-                                                id: row.id,
-                                                tenDiaDiem: values.name,
-                                                moTa: values.description,
-                                                tinhThanh: values.country
+                                            editDestinationThunk({
+                                                body: {
+                                                    id: row.id,
+                                                    tenDiaDiem: values.name,
+                                                    moTa: values.description,
+                                                    tinhThanh: values.country
+                                                },
+                                                action: () => dispatch(getDestinations())
                                             })
                                         );
-                                    dispatch(getDestinations());
+                                    handleClose();
                                     setStatus({ success: false });
                                     setSubmitting(false);
                                 } catch (err) {

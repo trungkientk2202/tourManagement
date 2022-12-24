@@ -19,7 +19,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import { GridActionsCellItem, GridRowModes } from '@mui/x-data-grid';
 import { useDispatch, useSelector } from 'react-redux';
 import Table from '../shared/table/table.component';
-import { getTourTypes, getTours } from '../../redux/tour/tour.slice';
+import { addTourThunk, deleteTourThunk, editTourThunk, getTourTypes, getTours } from '../../redux/tour/tour.slice';
 import { Avatar, Box, FormHelperText, Grid, InputLabel, MenuItem, OutlinedInput, Select } from '@mui/material';
 import dayjs from 'dayjs';
 import TextField from '@mui/material/TextField';
@@ -64,6 +64,12 @@ function BootstrapDialogTitle(props) {
     );
 }
 
+const status = {
+    1: { name: 'Planned', color: '#107c10' },
+    2: { name: 'On Going', color: '#ffac00' },
+    3: { name: 'Fulfilled', color: '#e13102' }
+};
+
 const Tour = () => {
     const dispatch = useDispatch();
     const formRef = React.useRef(null);
@@ -83,18 +89,19 @@ const Tour = () => {
 
     // 1 - planned, 2 - on going, 3 - fulfilled
     useEffect(() => {
-        const temp = tourList.map((_v, index) => ({
-            id: _v?.maTour ?? index,
-            destination: _v?.diemDen ?? '',
-            image: _v?.image ?? '',
-            description: _v?.moTa ?? '',
-            startingPoint: _v?.diemDi ?? '',
-            price: _v?.gia ?? 0,
-            tourTypeId: _v?.loaiTour?.maLoaiTour ?? '',
-            tourType: _v?.loaiTour?.tenLoaiTour ?? '',
-            status: _v?.trangThai,
-            startedDate: _v?.ngayBatDau ?? ''
-        }));
+        const temp =
+            tourList?.map((_v, index) => ({
+                id: _v?.maTour ?? index,
+                destination: _v?.diemDen ?? '',
+                image: _v?.image ?? '',
+                description: _v?.moTa ?? '',
+                startingPoint: _v?.diemDi ?? '',
+                price: _v?.gia ?? 0,
+                tourTypeId: _v?.loaiTour?.maLoaiTour ?? '',
+                tourType: _v?.loaiTour?.tenLoaiTour ?? '',
+                status: _v?.trangThai,
+                startedDate: _v?.ngayBatDau ?? ''
+            })) ?? [];
         setRows([...temp]);
     }, [tourList]);
 
@@ -109,8 +116,6 @@ const Tour = () => {
                 formRef.current.setFieldValue('tourType', row?.tourTypeId ?? '');
                 formRef.current.setFieldValue('status', row?.status ?? '');
                 formRef.current.setFieldValue('startedDate', dayjs(row?.startedDate ?? ''));
-            } else {
-                formRef.current.resetForm();
             }
         }
     }, [row]);
@@ -128,7 +133,10 @@ const Tour = () => {
     };
 
     const handleDeleteClick = (id) => () => {
-        setRows(rows.filter((row) => row.id !== id));
+        // setRows(rows.filter((row) => row.id !== id));
+        if (window.confirm('Are you sure!') === true) {
+            dispatch(deleteTourThunk({ id: id, action: () => dispatch(getTours()) }));
+        }
     };
 
     const handleCancelClick = (id) => () => {
@@ -151,11 +159,12 @@ const Tour = () => {
 
     const handleClose = () => {
         setOpen(false);
+        setMode(null);
+        formRef.current.resetForm();
     };
     const handleClickOpen = () => {
         setOpen(true);
         setMode('add');
-        if (row) setRow(null);
     };
 
     const columns = [
@@ -184,7 +193,19 @@ const Tour = () => {
         { field: 'startingPoint', headerName: 'Starting Point', width: 220, editable: true },
         { field: 'price', headerName: 'Price (VND)', width: 180, editable: true },
         { field: 'tourType', headerName: 'Type Of Tour', width: 180, editable: true },
-        { field: 'status', headerName: 'Status', width: 180, editable: true },
+        {
+            field: 'status',
+            headerName: 'Status',
+            width: 180,
+            editable: true,
+            renderCell: (params) => {
+                return (
+                    <Typography sx={{ color: status?.[params.value].color }}>
+                        {status?.[params.value].name ?? ''}
+                    </Typography>
+                );
+            }
+        },
         {
             field: 'actions',
             type: 'actions',
@@ -297,6 +318,40 @@ const Tour = () => {
                             })}
                             onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                                 try {
+                                    if (mode === 'add')
+                                        dispatch(
+                                            addTourThunk({
+                                                body: {
+                                                    diemDen: values.destination,
+                                                    moTa: values.description,
+                                                    diemDi: values.startingPoint,
+                                                    gia: values.price,
+                                                    maLoaiTour: values.tourType,
+                                                    trangThai: 1,
+                                                    image: values.image,
+                                                    ngayBatDau: values.startedDate
+                                                },
+                                                action: () => dispatch(getTours())
+                                            })
+                                        );
+                                    else if (mode === 'edit')
+                                        dispatch(
+                                            editTourThunk({
+                                                body: {
+                                                    id: row.id,
+                                                    diemDen: values.destination,
+                                                    moTa: values.description,
+                                                    diemDi: values.startingPoint,
+                                                    gia: values.price,
+                                                    maLoaiTour: values.tourType,
+                                                    trangThai: values.status,
+                                                    image: values.image,
+                                                    ngayBatDau: values.startedDate
+                                                },
+                                                action: () => dispatch(getTours())
+                                            })
+                                        );
+                                    handleClose();
                                     setStatus({ success: false });
                                     setSubmitting(false);
                                 } catch (err) {

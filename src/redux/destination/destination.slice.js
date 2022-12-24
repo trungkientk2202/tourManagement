@@ -36,32 +36,44 @@ export const getDestinations = createAsyncThunk('destination/list', async (_, { 
     }
 });
 
-export const deleteDestinationThunk = createAsyncThunk('destination/delete', async (id, { rejectWithValue }) => {
-    try {
-        await destinationService.deleteDestination(id);
-        return;
-    } catch (error) {
-        return rejectWithValue(error);
+export const deleteDestinationThunk = createAsyncThunk(
+    'destination/delete',
+    async ({ id, action }, { rejectWithValue }) => {
+        try {
+            await destinationService.deleteDestination(id);
+            action();
+            return;
+        } catch (error) {
+            return rejectWithValue(error);
+        }
     }
-});
+);
 
-export const addDestinationThunk = createAsyncThunk('destination/add', async (body, { rejectWithValue }) => {
-    try {
-        await destinationService.addDestination(body);
-        return;
-    } catch (error) {
-        return rejectWithValue(error);
+export const addDestinationThunk = createAsyncThunk(
+    'destination/add',
+    async ({ body, action }, { rejectWithValue }) => {
+        try {
+            await destinationService.addDestination(body);
+            action();
+            return;
+        } catch (error) {
+            return rejectWithValue(error);
+        }
     }
-});
+);
 
-export const editDestinationThunk = createAsyncThunk('destination/edit', async (body, { rejectWithValue }) => {
-    try {
-        await destinationService.editDestination(body);
-        return;
-    } catch (error) {
-        return rejectWithValue(error);
+export const editDestinationThunk = createAsyncThunk(
+    'destination/edit',
+    async ({ body, action }, { rejectWithValue }) => {
+        try {
+            await destinationService.editDestination(body);
+            action();
+            return;
+        } catch (error) {
+            return rejectWithValue(error);
+        }
     }
-});
+);
 
 const { reducer } = authSlice;
 export default reducer;
