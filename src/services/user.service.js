@@ -55,3 +55,7 @@ export const editUserManager = ({ id, ...body }) => {
 export const getUserByPhone = (phoneNumber) => {
     return apiService.makeRequest(HTTP_METHODS.get, API_PATHS.getUserByPhone + '/' + phoneNumber, {}, authHeader(), {});
 };
+
+export const getUserManagerByPhone = (phoneNumber) => {
+    return apiService.makeRequest(HTTP_METHODS.get, API_PATHS.getUserManagerByPhone + '/' + phoneNumber, {}, authHeader(), {});
+};

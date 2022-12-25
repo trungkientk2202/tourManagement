@@ -136,6 +136,15 @@ export const searchThunk = createAsyncThunk('user/search', async (phoneNumber, {
     }
 });
 
+export const searchManagerThunk = createAsyncThunk('user/search', async (phoneNumber, { rejectWithValue }) => {
+    try {
+        const res = await userService.getUserManagerByPhone(phoneNumber);
+        return res.data;
+    } catch (error) {
+        return rejectWithValue(error);
+    }
+});
+
 export const deleteUserThunk = createAsyncThunk('user/delete', async ({ id, action }, { rejectWithValue }) => {
     try {
         await userService.deleteUser(id);

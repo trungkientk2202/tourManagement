@@ -46,12 +46,11 @@ import {
     getSchedules
 } from '../../../redux/schedule/schedule.slice';
 import { getDestinations } from '../../../redux/destination/destination.slice';
-import { getUserByTour, getUserManagerByTour, searchThunk } from '../../../redux/user/user.slice';
+import { getUserByTour, getUserManagerByTour, searchManagerThunk, searchThunk } from '../../../redux/user/user.slice';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { isEmpty } from 'lodash';
-import { participateTour } from '../../../services/tour.service';
-import { participateTourThunk } from '../../../redux/tour/tour.slice';
+import { manageTourThunk, participateTourThunk, removeManageTourThunk, removeParticipateTourThunk } from '../../../redux/tour/tour.slice';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -213,6 +212,14 @@ const TourDetail = () => {
         setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
     };
 
+    const handleDeleteClick1 = (id) => () => {
+        // setRows(rows.filter((row) => row.id !== id));
+        if (window.confirm('Are you sure!') === true) {
+            if(tab===0) dispatch(removeParticipateTourThunk({ params: {tourId: tourId, sdt: id}, action: () => dispatch(getUserByTour(tourId)) }));
+            else if(tab===1) dispatch(removeManageTourThunk({ params: {tourId: tourId, sdt: id}, action: () => dispatch(getUserManagerByTour(tourId)) }));
+        }
+    };
+
     const handleDeleteClick = (id) => () => {
         // setRows(rows.filter((row) => row.id !== id));
         if (window.confirm('Are you sure!') === true) {
@@ -289,7 +296,7 @@ const TourDetail = () => {
                     <GridActionsCellItem
                         icon={<DeleteIcon />}
                         label="Delete"
-                        onClick={handleDeleteClick(id)}
+                        onClick={handleDeleteClick1(id)}
                         color="inherit"
                     />
                 ];
@@ -408,7 +415,7 @@ const TourDetail = () => {
                                                         thoiGianBatDau: values.startedDatetime,
                                                         trangThai: values.status
                                                     },
-                                                    action: () => dispatch(getSchedules())
+                                                    action: () => dispatch(getScheduleByTour(tourId))
                                                 })
                                             );
                                         else if (mode === 'edit')
@@ -420,7 +427,7 @@ const TourDetail = () => {
                                                         thoiGianBatDau: values.startedDatetime,
                                                         trangThai: values.status
                                                     },
-                                                    action: () => dispatch(getSchedules())
+                                                    action: () => dispatch(getScheduleByTour(tourId))
                                                 })
                                             );
                                         handleClose();
@@ -477,7 +484,7 @@ const TourDetail = () => {
                                                         onChange={handleChange}>
                                                         {destinationList?.map((_tt) => {
                                                             return (
-                                                                <MenuItem key={_tt.maDiaDiem} value={_tt.maLoaiTour}>
+                                                                <MenuItem key={_tt.maDiaDiem} value={_tt.maDiaDiem}>
                                                                     {_tt.tenDiaDiem}
                                                                 </MenuItem>
                                                             );
@@ -695,7 +702,10 @@ const TourDetail = () => {
                                 />
                                 <IconButton
                                     aria-label="search"
-                                    onClick={() => dispatch(searchThunk(sdt))}
+                                    onClick={() => {
+                                        if (tab === 0) dispatch(searchThunk(sdt))
+                                        else if (tab === 1) dispatch(searchManagerThunk(sdt))
+                                    }}
                                     sx={{ position: 'absolute', bottom: 10, right: 15 }}>
                                     <SearchIcon />
                                 </IconButton>
@@ -728,7 +738,7 @@ const TourDetail = () => {
                                                 body: {
                                                     maTour: tourId,
                                                     sdt: sdt,
-                                                    checkIn: true,
+                                                    diemDanh: false,
                                                     ghiChu: null,
                                                     diemHen: null,
                                                     vitri: null
@@ -736,11 +746,23 @@ const TourDetail = () => {
                                                 action: () => dispatch(getUserByTour())
                                             })
                                         );
-                                    else if (tab === 0) {
+                                    else if (tab === 1) {
+                                        dispatch(
+                                            manageTourThunk({
+                                                body: {
+                                                    maTour: tourId,
+                                                    sdt: sdt,
+                                                    thongBao: null,
+                                                    diemHen: null
+                                                },
+                                                action: () => dispatch(getUserManagerByTour())
+                                            })
+                                        );
                                     }
+                                    handleClose();
                                 }}
                                 variant={'contained'}
-                                disabled={Boolean(user)}>
+                                disabled={!Boolean(user)}>
                                 Add
                             </Button>
                         </DialogActions>

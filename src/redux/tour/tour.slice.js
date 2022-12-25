@@ -100,6 +100,44 @@ export const participateTourThunk = createAsyncThunk(
         }
     }
 );
+export const manageTourThunk = createAsyncThunk(
+    'tour/participate',
+    async ({ body, action }, { rejectWithValue }) => {
+        try {
+            await tourService.manageTour(body);
+            action();
+            return;
+        } catch (error) {
+            return rejectWithValue(error);
+        }
+    }
+);
+export const removeParticipateTourThunk = createAsyncThunk(
+    'tour/participate',
+    async ({ params, action }, { rejectWithValue }) => {
+        try {
+            await tourService.removeParticipateTour(params);
+            action();
+            return;
+        } catch (error) {
+            return rejectWithValue(error);
+        }
+    }
+);
+
+export const removeManageTourThunk = createAsyncThunk(
+    'tour/manage',
+    async ({ params, action }, { rejectWithValue }) => {
+        try {
+            await tourService.removeManageTour(params);
+            action();
+            return;
+        } catch (error) {
+            return rejectWithValue(error);
+        }
+    }
+);
+
 
 const { reducer } = authSlice;
 export default reducer;
