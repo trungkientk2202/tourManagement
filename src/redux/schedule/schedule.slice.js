@@ -45,5 +45,36 @@ export const getScheduleByTour = createAsyncThunk('schedule/byTour', async (tour
     }
 });
 
+
+export const deleteScheduleThunk = createAsyncThunk('schedule/delete', async ({ id, action }, { rejectWithValue }) => {
+    try {
+        await scheduleService.deleteSchedule(id);
+        action();
+        return;
+    } catch (error) {
+        return rejectWithValue(error);
+    }
+});
+
+export const addScheduleThunk = createAsyncThunk('schedule/add', async ({ body, action }, { rejectWithValue }) => {
+    try {
+        await scheduleService.addSchedule(body);
+        action();
+        return;
+    } catch (error) {
+        return rejectWithValue(error);
+    }
+});
+
+export const editScheduleThunk = createAsyncThunk('schedule/edit', async ({ body, action }, { rejectWithValue }) => {
+    try {
+        await scheduleService.editSchedule(body);
+        action();
+        return;
+    } catch (error) {
+        return rejectWithValue(error);
+    }
+});
+
 const { reducer } = authSlice;
 export default reducer;

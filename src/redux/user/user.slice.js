@@ -36,6 +36,17 @@ const userSlice = createSlice({
                 state.error = action.payload;
                 state.loading = false;
             })
+            .addCase(getUserManagerByTour.pending, (state, _) => {
+                state.loading = true;
+            })
+            .addCase(getUserManagerByTour.fulfilled, (state, action) => {
+                state.userList = action.payload;
+                state.loading = false;
+            })
+            .addCase(getUserManagerByTour.rejected, (state, action) => {
+                state.error = action.payload;
+                state.loading = false;
+            })
             .addCase(getUserManagers.pending, (state, _) => {
                 state.loading = true;
             })
@@ -101,6 +112,15 @@ export const getRolesThunk = createAsyncThunk('user/role', async (_, { rejectWit
 export const getUserByTour = createAsyncThunk('user/byTour', async (tourId, { rejectWithValue }) => {
     try {
         const res = await userService.getUserByTour(tourId);
+        return res.data;
+    } catch (error) {
+        return rejectWithValue(error);
+    }
+});
+
+export const getUserManagerByTour = createAsyncThunk('user/managerByTour', async (tourId, { rejectWithValue }) => {
+    try {
+        const res = await userService.getUserManagerByTour(tourId);
         return res.data;
     } catch (error) {
         return rejectWithValue(error);

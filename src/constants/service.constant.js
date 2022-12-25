@@ -46,6 +46,7 @@ const API_PATHS = {
     addTour: '/tour/add',
     editTour: '/tour/edit',
     deleteTour: '/tour/delete',
+    participateTour: '/tgtour/add',
 
     getDestinationList: '/diaDiem/getAll',
     addDestination: '/diaDiem/add',
@@ -62,6 +63,7 @@ const API_PATHS = {
     getUserManagerList: '/tk/getAll',
     getRoleList: '/loaitk/getAll',
     getUserByTour: '/tgtour/findByMaTour',
+    getUserManagerByTour: '/qltour/findByMaTour',
     getUserByPhone: '/khachHang/find',
     addUser: '/khachHang/add',
     editUser: '/khachHang/edit',

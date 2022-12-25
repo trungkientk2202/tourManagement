@@ -88,5 +88,18 @@ export const editTourThunk = createAsyncThunk('tour/edit', async ({ body, action
     }
 });
 
+export const participateTourThunk = createAsyncThunk(
+    'tour/participate',
+    async ({ body, action }, { rejectWithValue }) => {
+        try {
+            await tourService.participateTour(body);
+            action();
+            return;
+        } catch (error) {
+            return rejectWithValue(error);
+        }
+    }
+);
+
 const { reducer } = authSlice;
 export default reducer;

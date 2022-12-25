@@ -14,6 +14,16 @@ export const getUserByTour = (tourId) => {
     return apiService.makeRequest(HTTP_METHODS.get, API_PATHS.getUserByTour + '/' + tourId, {}, authHeader(), {});
 };
 
+export const getUserManagerByTour = (tourId) => {
+    return apiService.makeRequest(
+        HTTP_METHODS.get,
+        API_PATHS.getUserManagerByTour + '/' + tourId,
+        {},
+        authHeader(),
+        {}
+    );
+};
+
 export const getRoleList = () => {
     return apiService.makeRequest(HTTP_METHODS.get, API_PATHS.getRoleList, {}, authHeader(), {});
 };

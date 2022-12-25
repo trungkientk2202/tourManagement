@@ -21,3 +21,7 @@ export const addTour = (body) => {
 export const editTour = ({ id, ...body }) => {
     return apiService.makeRequest(HTTP_METHODS.post, API_PATHS.editTour + '/' + id, {}, authHeader(), body);
 };
+
+export const participateTour = (body) => {
+    return apiService.makeRequest(HTTP_METHODS.post, API_PATHS.participateTour, {}, authHeader(), body);
+};
